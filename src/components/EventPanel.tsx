@@ -56,7 +56,7 @@ export function EventPanel({ events, gameState, onResolve }: EventPanelProps) {
               </p>
             ) : null}
 
-            <div className="mt-4 grid gap-2 md:grid-cols-3">
+            <div className="mt-4 grid items-stretch gap-2 md:grid-cols-3">
               {event.choices.map((choice) => {
                 const disabledReason = getChoiceDisabledReason(gameState, choice);
                 const selected = event.selectedChoiceId === choice.id;
@@ -97,41 +97,52 @@ function ChoiceButton({
   const moneyCost = Math.abs(Math.min(0, choice.effects.money ?? choice.cost ?? 0));
 
   return (
-    <button
-      type="button"
-      disabled={disabled}
-      onClick={onClick}
+    <article
       className={`rounded-md border p-3 text-left text-sm transition ${
         selected
           ? "border-sky-300 bg-sky-950/20"
           : disabled
             ? "cursor-not-allowed border-zinc-800 bg-zinc-950/40 opacity-60"
             : "border-emerald-400/40 bg-zinc-950/70 hover:border-emerald-300"
-      }`}
+      } flex h-full min-w-0 flex-col`}
     >
-      <span className="flex items-start justify-between gap-2">
-        <span className="font-medium text-zinc-100">{choice.label}</span>
+      <div className="min-w-0 space-y-2">
+        <div className="flex items-start justify-between gap-2">
+          <h4 className="min-w-0 break-words font-medium text-zinc-100">{choice.label}</h4>
         <span className={`rounded px-2 py-1 text-xs font-semibold ${disabled ? "bg-zinc-700/60 text-zinc-300" : "bg-emerald-400/15 text-emerald-200"}`}>
           {selected ? "選択済み" : disabled ? "選択不可" : "選択可能"}
         </span>
-      </span>
-      <span className="mt-1 block text-xs leading-5 text-zinc-400">{choice.description}</span>
-      <span className="mt-2 block text-xs text-zinc-500">必要条件: {moneyCost > 0 ? `資金 ${moneyCost.toLocaleString()}円以上` : "なし"}</span>
-      <span className="mt-2 flex flex-wrap gap-2">
-        {toEffectBadges(choice.effects, choice.effectPreview).map((effect) => (
-          <EffectDeltaBadge
-            key={`${choice.id}-${effect.label}`}
-            label={effect.label}
-            value={effect.value}
-            direction={effect.direction}
-            tone={effect.tone}
-          />
-        ))}
-      </span>
-      {disabledReason ? (
-        <span className="mt-2 block text-xs text-amber-300">理由: {disabledReason}</span>
-      ) : null}
-    </button>
+        </div>
+        <p className="break-words text-xs leading-5 text-zinc-400">{choice.description}</p>
+        <p className="text-xs text-zinc-500">
+          必要条件: {moneyCost > 0 ? `資金 ${moneyCost.toLocaleString()}円以上` : "なし"}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {toEffectBadges(choice.effects, choice.effectPreview).map((effect) => (
+            <EffectDeltaBadge
+              key={`${choice.id}-${effect.label}`}
+              label={effect.label}
+              value={effect.value}
+              direction={effect.direction}
+              tone={effect.tone}
+            />
+          ))}
+        </div>
+        {disabledReason ? (
+          <p className="text-xs leading-5 text-amber-300">理由: {disabledReason}</p>
+        ) : null}
+      </div>
+      <div className="mt-auto pt-4">
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={onClick}
+          className="h-9 w-full rounded-md bg-emerald-400 px-3 text-xs font-semibold text-zinc-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-300"
+        >
+          {selected ? "選択済み" : disabled ? "選択不可" : "選択する"}
+        </button>
+      </div>
+    </article>
   );
 }
 

@@ -39,7 +39,7 @@ export function ActionPanel({ gameState, onPerformAction }: ActionPanelProps) {
         APを消費してクラブ運営を進めます。同じ行動はMVPでは同月1回までです。
       </p>
 
-      <div className="mt-5 grid gap-3 md:grid-cols-2">
+      <div className="mt-5 grid items-stretch gap-3 md:grid-cols-2 xl:grid-cols-3">
         {actionItems.map((item) => (
           <ActionCard
             key={item.action.id}
@@ -77,46 +77,50 @@ function ActionCard({
           : status === "done"
             ? "border-sky-400/40 bg-sky-950/10"
             : "border-zinc-800 bg-zinc-950/40 opacity-65"
-      }`}
+      } flex h-full min-w-0 flex-col`}
     >
-      <span className="flex items-start justify-between gap-2">
-        <span className="font-semibold text-zinc-100">{item.action.name}</span>
-        <StatusLabel status={status} />
-      </span>
-      <span className="mt-1 block leading-5 text-zinc-400">{item.action.description}</span>
-      <span className="mt-3 flex flex-wrap gap-2">
-        <EffectDeltaBadge
-          label="AP"
-          value={`-${item.action.actionPointCost}`}
-          direction="down"
-          tone="negative"
-        />
-        {toEffectBadges(item.action.effectsPreview).map((effect) => (
+      <div className="min-w-0 space-y-2">
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="min-w-0 break-words font-semibold text-zinc-100">{item.action.name}</h3>
+          <StatusLabel status={status} />
+        </div>
+        <p className="break-words leading-5 text-zinc-400">{item.action.description}</p>
+        <div className="flex flex-wrap gap-2">
           <EffectDeltaBadge
-            key={effect.label}
-            label={effect.label}
-            value={effect.value}
-            direction={effect.direction}
-            tone={effect.tone}
+            label="AP"
+            value={`-${item.action.actionPointCost}`}
+            direction="down"
+            tone="negative"
           />
-        ))}
-      </span>
-      {item.disabledReason ? (
-        <span className="mt-2 block text-xs text-amber-300">理由: {item.disabledReason}</span>
-      ) : null}
-      {item.executedLog ? (
-        <span className="mt-2 block text-xs leading-5 text-sky-200">
-          ✓ {formatDatedRecord(item.executedLog)} 実行済み: {item.executedLog.result}
-        </span>
-      ) : null}
-      <button
-        type="button"
-        disabled={disabled}
-        onClick={() => onPerformAction(item.action)}
-        className="mt-3 h-9 w-full rounded-md bg-emerald-400 px-3 text-xs font-semibold text-zinc-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-300"
-      >
-        {status === "available" ? "実行する" : status === "done" ? "実行済み" : "実行不可"}
-      </button>
+          {toEffectBadges(item.action.effectsPreview).map((effect) => (
+            <EffectDeltaBadge
+              key={effect.label}
+              label={effect.label}
+              value={effect.value}
+              direction={effect.direction}
+              tone={effect.tone}
+            />
+          ))}
+        </div>
+        {item.disabledReason ? (
+          <p className="text-xs leading-5 text-amber-300">理由: {item.disabledReason}</p>
+        ) : null}
+        {item.executedLog ? (
+          <p className="text-xs leading-5 text-sky-200">
+            ✓ {formatDatedRecord(item.executedLog)} 実行済み: {item.executedLog.result}
+          </p>
+        ) : null}
+      </div>
+      <div className="mt-auto pt-4">
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={() => onPerformAction(item.action)}
+          className="h-9 w-full rounded-md bg-emerald-400 px-3 text-xs font-semibold text-zinc-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-300"
+        >
+          {status === "available" ? "実行する" : status === "done" ? "実行済み" : "実行不可"}
+        </button>
+      </div>
     </article>
   );
 }

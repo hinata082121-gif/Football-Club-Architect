@@ -65,7 +65,7 @@ export function ScoutPanel({
           まだ候補選手は発見されていません。スカウトスタッフを雇用し、委任レベルを上げて翌月へ進めると候補が出る可能性があります。
         </p>
       ) : (
-        <div className="mt-4 grid gap-3 xl:grid-cols-2">
+        <div className="mt-4 grid items-stretch gap-3 xl:grid-cols-2">
           {scoutedPlayers.map((scoutedPlayer) => (
             <ScoutedPlayerCard
               key={scoutedPlayer.id}
@@ -93,14 +93,15 @@ function ScoutedPlayerCard({
   const signCheck = canSignScoutedPlayer(gameState, scoutedPlayer.id);
 
   return (
-    <article className="rounded-md border border-zinc-800 bg-zinc-950/62 p-4">
+    <article className="flex h-full min-w-0 flex-col rounded-md border border-zinc-800 bg-zinc-950/62 p-4">
+      <div className="min-w-0 space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
+        <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded bg-emerald-400 px-2 py-1 text-xs font-bold text-zinc-950">
               {scoutedPlayer.player.position}
             </span>
-            <h4 className="text-lg font-semibold text-zinc-50">{scoutedPlayer.player.name}</h4>
+            <h4 className="break-words text-lg font-semibold text-zinc-50">{scoutedPlayer.player.name}</h4>
           </div>
           <p className="mt-1 text-xs text-zinc-500">
             {getScoutFocusLabel(scoutedPlayer.focus)} / 発見者: {scoutedPlayer.discoveredByStaffName ?? "クラブ調査"}
@@ -112,7 +113,7 @@ function ScoutedPlayerCard({
         </span>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <Estimate label="年齢" value={`${scoutedPlayer.player.age}歳`} />
         <Estimate label="推定総合" value={scoutedPlayer.estimatedOverall.toString()} />
         <Estimate label="推定将来性" value={scoutedPlayer.estimatedPotential.toString()} />
@@ -124,21 +125,24 @@ function ScoutedPlayerCard({
         <Estimate label="有効期限" value={formatYearMonth(scoutedPlayer.expiresAtYear, scoutedPlayer.expiresAtMonth)} />
       </div>
 
-      <button
-        type="button"
-        disabled={!signCheck.canSign}
-        onClick={() => onSignScoutedPlayer(scoutedPlayer.id)}
-        className={`mt-4 h-10 w-full rounded-md text-sm font-semibold transition ${
-          signCheck.canSign
-            ? "bg-emerald-400 text-zinc-950 hover:bg-emerald-300"
-            : "cursor-not-allowed border border-zinc-700 text-zinc-500"
-        }`}
-      >
-        獲得する
-      </button>
       {!signCheck.canSign && signCheck.reason ? (
-        <p className="mt-2 text-xs text-amber-200">{signCheck.reason}</p>
+        <p className="text-xs text-amber-200">{signCheck.reason}</p>
       ) : null}
+      </div>
+      <div className="mt-auto pt-4">
+        <button
+          type="button"
+          disabled={!signCheck.canSign}
+          onClick={() => onSignScoutedPlayer(scoutedPlayer.id)}
+          className={`h-10 w-full rounded-md text-sm font-semibold transition ${
+            signCheck.canSign
+              ? "bg-emerald-400 text-zinc-950 hover:bg-emerald-300"
+              : "cursor-not-allowed border border-zinc-700 text-zinc-500"
+          }`}
+        >
+          {signCheck.canSign ? "獲得する" : "獲得不可"}
+        </button>
+      </div>
     </article>
   );
 }

@@ -63,7 +63,7 @@ export function LoanPanel({ gameState, onTakeLoan, compact = false }: LoanPanelP
         </div>
       ) : null}
 
-      <div className={`mt-4 grid gap-3 ${compact ? "lg:grid-cols-2" : "xl:grid-cols-2"}`}>
+      <div className={`mt-4 grid items-stretch gap-3 ${compact ? "lg:grid-cols-2" : "xl:grid-cols-2"}`}>
         {offers.map((offer) => (
           <LoanOfferCard key={offer.id} offer={offer} onTakeLoan={onTakeLoan} compact={compact} />
         ))}
@@ -82,53 +82,57 @@ function LoanOfferCard({
   compact: boolean;
 }) {
   return (
-    <article className={`rounded-md border border-zinc-800 bg-zinc-950/58 p-4 ${offer.available ? "" : "opacity-65"}`}>
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h3 className="text-base font-semibold text-zinc-50">{getLoanTypeLabel(offer.type)}</h3>
-          <p className="mt-1 text-sm leading-6 text-zinc-400">{offer.description}</p>
-        </div>
-        <span className={offer.available ? "rounded bg-emerald-400 px-2 py-1 text-xs font-bold text-zinc-950" : "rounded bg-zinc-700 px-2 py-1 text-xs font-bold text-zinc-300"}>
-          {offer.available ? "利用可能" : "利用不可"}
-        </span>
-      </div>
-
-      <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        <MiniStat label="金額" value={`${offer.amount.toLocaleString()}円`} />
-        <MiniStat label="利率" value={`${Math.round(offer.interestRate * 100)}%`} />
-        <MiniStat label="期間" value={offer.totalMonths > 0 ? `${offer.totalMonths}か月` : "返済なし"} />
-        <MiniStat label="月返済" value={`${offer.monthlyPayment.toLocaleString()}円`} />
-      </div>
-
-      {!compact ? (
-        <>
-          <div className="mt-3 rounded-md border border-zinc-800 bg-zinc-900/50 p-3">
-            <p className="text-xs font-semibold text-zinc-300">条件</p>
-            <ul className="mt-2 grid gap-1 text-xs leading-5 text-zinc-400">
-              {offer.requirements.map((requirement) => (
-                <li key={requirement}>{requirement}</li>
-              ))}
-            </ul>
+    <article className={`flex h-full min-w-0 flex-col rounded-md border border-zinc-800 bg-zinc-950/58 p-4 ${offer.available ? "" : "opacity-65"}`}>
+      <div className="min-w-0 space-y-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <h3 className="break-words text-base font-semibold text-zinc-50">{getLoanTypeLabel(offer.type)}</h3>
+            <p className="mt-1 text-sm leading-6 text-zinc-400">{offer.description}</p>
           </div>
-          <p className="mt-3 text-xs leading-5 text-amber-200">{offer.riskNote}</p>
-        </>
-      ) : null}
+          <span className={offer.available ? "rounded bg-emerald-400 px-2 py-1 text-xs font-bold text-zinc-950" : "rounded bg-zinc-700 px-2 py-1 text-xs font-bold text-zinc-300"}>
+            {offer.available ? "利用可能" : "利用不可"}
+          </span>
+        </div>
 
-      <button
-        type="button"
-        disabled={!offer.available}
-        onClick={() => onTakeLoan(offer.id)}
-        className={`mt-4 h-10 w-full rounded-md text-sm font-semibold transition ${
-          offer.available
-            ? "bg-emerald-400 text-zinc-950 hover:bg-emerald-300"
-            : "cursor-not-allowed border border-zinc-700 text-zinc-500"
-        }`}
-      >
-        借入する
-      </button>
-      {!offer.available && offer.disabledReason ? (
-        <p className="mt-2 text-xs text-amber-200">理由: {offer.disabledReason}</p>
-      ) : null}
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <MiniStat label="金額" value={`${offer.amount.toLocaleString()}円`} />
+          <MiniStat label="利率" value={`${Math.round(offer.interestRate * 100)}%`} />
+          <MiniStat label="期間" value={offer.totalMonths > 0 ? `${offer.totalMonths}か月` : "返済なし"} />
+          <MiniStat label="月返済" value={`${offer.monthlyPayment.toLocaleString()}円`} />
+        </div>
+
+        {!compact ? (
+          <>
+            <div className="rounded-md border border-zinc-800 bg-zinc-900/50 p-3">
+              <p className="text-xs font-semibold text-zinc-300">条件</p>
+              <ul className="mt-2 grid gap-1 text-xs leading-5 text-zinc-400">
+                {offer.requirements.map((requirement) => (
+                  <li key={requirement}>{requirement}</li>
+                ))}
+              </ul>
+            </div>
+            <p className="text-xs leading-5 text-amber-200">{offer.riskNote}</p>
+          </>
+        ) : null}
+
+        {!offer.available && offer.disabledReason ? (
+          <p className="text-xs text-amber-200">理由: {offer.disabledReason}</p>
+        ) : null}
+      </div>
+      <div className="mt-auto pt-4">
+        <button
+          type="button"
+          disabled={!offer.available}
+          onClick={() => onTakeLoan(offer.id)}
+          className={`h-10 w-full rounded-md text-sm font-semibold transition ${
+            offer.available
+              ? "bg-emerald-400 text-zinc-950 hover:bg-emerald-300"
+              : "cursor-not-allowed border border-zinc-700 text-zinc-500"
+          }`}
+        >
+          {offer.available ? "借入する" : "利用不可"}
+        </button>
+      </div>
     </article>
   );
 }

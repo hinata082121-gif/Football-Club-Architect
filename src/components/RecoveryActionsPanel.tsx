@@ -36,7 +36,7 @@ export function RecoveryActionsPanel({
         ) : null}
       </div>
 
-      <div className={`mt-4 grid gap-3 ${compact ? "lg:grid-cols-2" : "xl:grid-cols-2"}`}>
+      <div className={`mt-4 grid items-stretch gap-3 ${compact ? "lg:grid-cols-2" : "xl:grid-cols-2"}`}>
         {actions.map((action) => (
           <RecoveryActionCard
             key={action.type}
@@ -60,43 +60,47 @@ function RecoveryActionCard({
   onExecuteRecoveryAction: (actionType: RecoveryActionType) => void;
 }) {
   return (
-    <article className={`rounded-md border border-zinc-800 bg-zinc-950/58 p-4 ${action.available ? "" : "opacity-65"}`}>
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h3 className="text-base font-semibold text-zinc-50">{action.title}</h3>
-          <p className="mt-1 text-sm leading-6 text-zinc-400">{action.description}</p>
+    <article className={`flex h-full min-w-0 flex-col rounded-md border border-zinc-800 bg-zinc-950/58 p-4 ${action.available ? "" : "opacity-65"}`}>
+      <div className="min-w-0 space-y-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <h3 className="break-words text-base font-semibold text-zinc-50">{action.title}</h3>
+            <p className="mt-1 text-sm leading-6 text-zinc-400">{action.description}</p>
+          </div>
+          <span className={action.available ? "rounded bg-emerald-400 px-2 py-1 text-xs font-bold text-zinc-950" : "rounded bg-zinc-700 px-2 py-1 text-xs font-bold text-zinc-300"}>
+            {action.available ? "実行可能" : "実行不可"}
+          </span>
         </div>
-        <span className={action.available ? "rounded bg-emerald-400 px-2 py-1 text-xs font-bold text-zinc-950" : "rounded bg-zinc-700 px-2 py-1 text-xs font-bold text-zinc-300"}>
-          {action.available ? "実行可能" : "実行不可"}
-        </span>
+
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <MiniStat label="即時資金" value={`+${action.immediateMoneyEffect.toLocaleString()}円`} />
+          <MiniStat label="月次影響" value={action.monthlyPenalty ? `-${action.monthlyPenalty.toLocaleString()}円` : "なし"} />
+          <MiniStat label="期間" value={action.durationMonths ? `${action.durationMonths}か月` : "単発"} />
+          <MiniStat label="評判" value={formatSigned(action.reputationEffect ?? 0)} />
+        </div>
+
+        {!compact ? (
+          <p className="text-xs leading-5 text-amber-200">{action.riskNote}</p>
+        ) : null}
+
+        {!action.available && action.disabledReason ? (
+          <p className="text-xs text-amber-200">理由: {action.disabledReason}</p>
+        ) : null}
       </div>
-
-      <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        <MiniStat label="即時資金" value={`+${action.immediateMoneyEffect.toLocaleString()}円`} />
-        <MiniStat label="月次影響" value={action.monthlyPenalty ? `-${action.monthlyPenalty.toLocaleString()}円` : "なし"} />
-        <MiniStat label="期間" value={action.durationMonths ? `${action.durationMonths}か月` : "単発"} />
-        <MiniStat label="評判" value={formatSigned(action.reputationEffect ?? 0)} />
+      <div className="mt-auto pt-4">
+        <button
+          type="button"
+          disabled={!action.available}
+          onClick={() => onExecuteRecoveryAction(action.type)}
+          className={`h-10 w-full rounded-md text-sm font-semibold transition ${
+            action.available
+              ? "bg-amber-300 text-zinc-950 hover:bg-amber-200"
+              : "cursor-not-allowed border border-zinc-700 text-zinc-500"
+          }`}
+        >
+          {action.available ? "実行する" : "実行不可"}
+        </button>
       </div>
-
-      {!compact ? (
-        <p className="mt-3 text-xs leading-5 text-amber-200">{action.riskNote}</p>
-      ) : null}
-
-      <button
-        type="button"
-        disabled={!action.available}
-        onClick={() => onExecuteRecoveryAction(action.type)}
-        className={`mt-4 h-10 w-full rounded-md text-sm font-semibold transition ${
-          action.available
-            ? "bg-amber-300 text-zinc-950 hover:bg-amber-200"
-            : "cursor-not-allowed border border-zinc-700 text-zinc-500"
-        }`}
-      >
-        実行する
-      </button>
-      {!action.available && action.disabledReason ? (
-        <p className="mt-2 text-xs text-amber-200">理由: {action.disabledReason}</p>
-      ) : null}
     </article>
   );
 }

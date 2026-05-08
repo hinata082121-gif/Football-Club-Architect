@@ -59,30 +59,37 @@ export function TrainingMatchPanel({ gameState, onPlayTrainingMatch }: TrainingM
         期待効果: {formatEffects(preview.expectedRewards)}
       </div>
 
-      <div className="mt-4 grid gap-3">
+      <div className="mt-4 grid items-stretch gap-3">
         {opponents.map((opponent) => (
           <button
             key={opponent.id}
             type="button"
             disabled={disabled}
             onClick={() => onPlayTrainingMatch(selectedType, opponent)}
-            className="min-w-0 rounded-md border border-zinc-700 bg-zinc-950/40 p-3 text-left text-sm transition hover:border-emerald-300 disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex h-full min-w-0 flex-col rounded-md border border-zinc-700 bg-zinc-950/40 p-3 text-left text-sm transition hover:border-emerald-300 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
-              <div className="min-w-0">
-                <span className="block break-words font-semibold text-zinc-100">{opponent.clubName}</span>
-                <span className="mt-1 block text-xs text-zinc-400">社長: {opponent.ownerName}</span>
+            <div className="min-w-0">
+              <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+                <div className="min-w-0">
+                  <span className="block break-words font-semibold text-zinc-100">{opponent.clubName}</span>
+                  <span className="mt-1 block text-xs text-zinc-400">社長: {opponent.ownerName}</span>
+                </div>
+                <span className="w-fit rounded bg-zinc-800 px-2 py-1 text-xs text-zinc-300">
+                  {formatPlayStyle(opponent.playStyle)}
+                </span>
               </div>
-              <span className="rounded bg-zinc-800 px-2 py-1 text-xs text-zinc-300">
-                {formatPlayStyle(opponent.playStyle)}
-              </span>
+              <dl className="mt-3 grid grid-cols-2 gap-2 text-xs text-zinc-400 md:grid-cols-4">
+                <Stat label="クラブLv" value={opponent.clubLevel} />
+                <Stat label="戦力" value={opponent.teamPower} />
+                <Stat label="連携" value={opponent.teamwork} />
+                <Stat label="ファン" value={opponent.fans.toLocaleString()} />
+              </dl>
             </div>
-            <dl className="mt-3 grid grid-cols-2 gap-2 text-xs text-zinc-400 md:grid-cols-4">
-              <Stat label="クラブLv" value={opponent.clubLevel} />
-              <Stat label="戦力" value={opponent.teamPower} />
-              <Stat label="連携" value={opponent.teamwork} />
-              <Stat label="ファン" value={opponent.fans.toLocaleString()} />
-            </dl>
+            <span className="mt-auto block pt-4">
+              <span className="block h-9 w-full rounded-md bg-emerald-400 px-3 py-2 text-center text-xs font-semibold text-zinc-950">
+                {disabled ? "今月は実行不可" : "練習試合を行う"}
+              </span>
+            </span>
           </button>
         ))}
       </div>
