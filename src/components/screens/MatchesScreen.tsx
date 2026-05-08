@@ -14,7 +14,7 @@ export function MatchesScreen({
   onEnterOfficialCompetition,
 }: MatchesScreenProps) {
   return (
-    <section className="grid gap-5 xl:grid-cols-[1fr_0.9fr]">
+    <section className="grid w-full max-w-full min-w-0 gap-5 overflow-hidden xl:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
       <MatchPanel
         gameState={gameState}
         latestMatch={gameState.matches[0]}

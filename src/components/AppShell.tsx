@@ -41,7 +41,7 @@ export function AppShell({
 
   return (
     <main
-      className="relative min-h-screen overflow-hidden bg-slate-950 bg-cover bg-fixed bg-center text-zinc-100"
+      className="relative min-h-screen w-full max-w-full overflow-x-hidden bg-slate-950 bg-cover bg-fixed bg-center text-zinc-100"
       style={{
         backgroundColor: "#020617",
         backgroundImage: `url(${backgroundUrl})`,
@@ -51,7 +51,7 @@ export function AppShell({
     >
       <div className="absolute inset-0 bg-black/68" />
       <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-slate-950/25 to-slate-950/85" />
-      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-4 px-4 py-4 sm:px-5">
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-7xl min-w-0 flex-col gap-4 px-4 py-4 sm:px-5">
         <TopStatusBar
           gameState={gameState}
           onAdvanceTurn={onAdvanceTurn}
@@ -63,7 +63,7 @@ export function AppShell({
           staffWarningCount={staffWarningCount}
           onTabChange={onTabChange}
         />
-        <div className="pb-8">{children}</div>
+        <div className="min-w-0 max-w-full pb-8">{children}</div>
       </div>
     </main>
   );

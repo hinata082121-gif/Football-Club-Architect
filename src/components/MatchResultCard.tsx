@@ -11,19 +11,19 @@ export function MatchResultCard({ match, clubName, compact = false }: MatchResul
   const report = match.report;
 
   return (
-    <article className="rounded-md border border-zinc-800 bg-zinc-950/55 p-4">
+    <article className="min-w-0 max-w-full overflow-hidden rounded-md border border-zinc-800 bg-zinc-950/55 p-3 sm:p-4">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-        <div>
-          <p className="text-xs text-zinc-500">
+        <div className="min-w-0">
+          <p className="break-words text-xs text-zinc-500">
             {getMatchTypeLabel(match.type)} | {formatDatedRecord(match)} | {match.isHome ? "ホーム" : "アウェイ"}
           </p>
-          <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
-            <p className="text-lg font-semibold text-zinc-100">{clubName}</p>
-            <p className="text-3xl font-bold tracking-normal text-zinc-50">
+          <div className="mt-3 grid min-w-0 gap-2 text-center sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-center sm:text-left">
+            <p className="break-words text-lg font-semibold text-zinc-100">{clubName}</p>
+            <p className="text-3xl font-bold tracking-normal text-zinc-50 sm:px-3">
               {match.goalsFor} - {match.goalsAgainst}
             </p>
-            <div className="sm:text-right">
-              <p className="text-lg font-semibold text-zinc-100">{match.opponentName}</p>
+            <div className="min-w-0 sm:text-right">
+              <p className="break-words text-lg font-semibold text-zinc-100">{match.opponentName}</p>
               <p className="mt-1 text-xs text-zinc-500">相手社長: {match.opponentOwnerName ?? "不明"}</p>
             </div>
           </div>
@@ -64,7 +64,7 @@ function ResultBadge({ result }: { result: MatchResult }) {
           : "border-zinc-700 bg-zinc-800 text-zinc-300";
 
   return (
-    <div className={`rounded-md border px-5 py-3 text-center ${className}`}>
+    <div className={`w-full rounded-md border px-5 py-3 text-center sm:w-auto ${className}`}>
       <p className="text-xs text-current/80">結果</p>
       <p className="mt-1 text-2xl font-bold tracking-normal">{getResultLabel(result)}</p>
     </div>
@@ -146,7 +146,7 @@ function ReportList({ title, items }: { title: string; items: string[] }) {
   return (
     <section>
       <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
-      <ul className="mt-2 list-disc space-y-1 pl-5 text-zinc-400">
+      <ul className="mt-2 list-disc space-y-1 break-words pl-5 text-zinc-400">
         {items.map((item) => (
           <li key={item}>{item}</li>
         ))}

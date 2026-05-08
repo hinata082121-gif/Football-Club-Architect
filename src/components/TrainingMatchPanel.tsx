@@ -25,12 +25,12 @@ export function TrainingMatchPanel({ gameState, onPlayTrainingMatch }: TrainingM
   const preview = getTrainingMatchPreview(gameState, selectedType);
 
   return (
-    <section className="rounded-md border border-zinc-800 bg-zinc-900/88 p-5 backdrop-blur">
+    <section className="min-w-0 max-w-full rounded-md border border-zinc-800 bg-zinc-900/88 p-4 backdrop-blur sm:p-5">
       <h2 className="text-lg font-semibold">練習試合</h2>
       <p className="mt-2 text-sm leading-6 text-zinc-400">
         公式戦がない月でも育成、調整、地域交流を進められます。同月に1回までです。
       </p>
-      <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
+      <div className="mt-4 flex max-w-full gap-2 overflow-x-auto pb-1">
         {TRAINING_MATCH_TYPES.map((type) => {
           const typePreview = getTrainingMatchPreview(gameState, type);
           const selected = selectedType === type;
@@ -66,11 +66,11 @@ export function TrainingMatchPanel({ gameState, onPlayTrainingMatch }: TrainingM
             type="button"
             disabled={disabled}
             onClick={() => onPlayTrainingMatch(selectedType, opponent)}
-            className="rounded-md border border-zinc-700 bg-zinc-950/40 p-3 text-left text-sm transition hover:border-emerald-300 disabled:cursor-not-allowed disabled:opacity-40"
+            className="min-w-0 rounded-md border border-zinc-700 bg-zinc-950/40 p-3 text-left text-sm transition hover:border-emerald-300 disabled:cursor-not-allowed disabled:opacity-40"
           >
             <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
-              <div>
-                <span className="block font-semibold text-zinc-100">{opponent.clubName}</span>
+              <div className="min-w-0">
+                <span className="block break-words font-semibold text-zinc-100">{opponent.clubName}</span>
                 <span className="mt-1 block text-xs text-zinc-400">社長: {opponent.ownerName}</span>
               </div>
               <span className="rounded bg-zinc-800 px-2 py-1 text-xs text-zinc-300">

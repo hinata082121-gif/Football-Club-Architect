@@ -1,5 +1,4 @@
 import { ActionPanel } from "@/components/ActionPanel";
-import { CurrentMonthSummaryPanel } from "@/components/CurrentMonthSummaryPanel";
 import { LoanPanel } from "@/components/LoanPanel";
 import { RecoveryActionsPanel } from "@/components/RecoveryActionsPanel";
 import { MATCH_BALANCE } from "@/game/balance";
@@ -28,7 +27,6 @@ export function ActionsScreen({
 
   return (
     <section className="grid gap-5">
-      <CurrentMonthSummaryPanel gameState={gameState} />
       {gameState.financialHealth.status !== "healthy" ? (
         <div className="grid gap-5 xl:grid-cols-2">
           <RecoveryActionsPanel

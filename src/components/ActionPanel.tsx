@@ -14,32 +14,23 @@ interface ActionPanelProps {
 }
 
 export function ActionPanel({ gameState, onPerformAction }: ActionPanelProps) {
-  const groupedActions = MVP_PLAYER_ACTIONS.reduce(
-    (groups, action) => {
-      const executedLog = getCurrentMonthPlayerActionLog(gameState, action);
+  const actionItems = MVP_PLAYER_ACTIONS.map((action): ActionCardItem => {
+    const executedLog = getCurrentMonthPlayerActionLog(gameState, action);
 
-      if (executedLog) {
-        groups.done.push({ action, executedLog });
-        return groups;
-      }
+    if (executedLog) {
+      return { action, status: "done", executedLog };
+    }
 
-      if (canPerformPlayerAction(gameState, action)) {
-        groups.available.push({ action, disabledReason: null });
-        return groups;
-      }
+    if (canPerformPlayerAction(gameState, action)) {
+      return { action, status: "available" };
+    }
 
-      groups.unavailable.push({
-        action,
-        disabledReason: getPlayerActionDisabledReason(gameState, action) ?? "条件を満たしていません。",
-      });
-      return groups;
-    },
-    {
-      available: [] as ActionCardItem[],
-      unavailable: [] as ActionCardItem[],
-      done: [] as ActionCardItem[],
-    },
-  );
+    return {
+      action,
+      status: "unavailable",
+      disabledReason: getPlayerActionDisabledReason(gameState, action) ?? "条件を満たしていません。",
+    };
+  });
 
   return (
     <section className="rounded-md border border-zinc-800 bg-zinc-900/88 p-5 backdrop-blur">
@@ -48,98 +39,44 @@ export function ActionPanel({ gameState, onPerformAction }: ActionPanelProps) {
         APを消費してクラブ運営を進めます。同じ行動はMVPでは同月1回までです。
       </p>
 
-      <ActionGroup
-        title="今月実行可能"
-        emptyText="今月実行できる社長行動はありません。翌月へ進むか、条件を整えてください。"
-        items={groupedActions.available}
-        status="available"
-        onPerformAction={onPerformAction}
-      />
-      <ActionGroup
-        title="今月実行済み"
-        emptyText="まだ今月実行した社長行動はありません。"
-        items={groupedActions.done}
-        status="done"
-        onPerformAction={onPerformAction}
-      />
-      <ActionGroup
-        title="条件不足"
-        emptyText="条件不足の社長行動はありません。"
-        items={groupedActions.unavailable}
-        status="unavailable"
-        onPerformAction={onPerformAction}
-      />
+      <div className="mt-5 grid gap-3 md:grid-cols-2">
+        {actionItems.map((item) => (
+          <ActionCard
+            key={item.action.id}
+            item={item}
+            onPerformAction={onPerformAction}
+          />
+        ))}
+      </div>
     </section>
   );
 }
 
 interface ActionCardItem {
   action: PlayerAction;
+  status: "available" | "unavailable" | "done";
   disabledReason?: string | null;
   executedLog?: ReturnType<typeof getCurrentMonthPlayerActionLog>;
 }
 
-function ActionGroup({
-  title,
-  emptyText,
-  items,
-  status,
-  onPerformAction,
-}: {
-  title: string;
-  emptyText: string;
-  items: ActionCardItem[];
-  status: "available" | "unavailable" | "done";
-  onPerformAction: (action: PlayerAction) => void;
-}) {
-  return (
-    <div className="mt-5">
-      <div className="flex items-center justify-between gap-3">
-        <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
-        <span className="text-xs text-zinc-500">{items.length}件</span>
-      </div>
-      {items.length === 0 ? (
-        <p className="mt-3 rounded-md border border-zinc-800 bg-zinc-950/40 p-3 text-xs text-zinc-500">
-          {emptyText}
-        </p>
-      ) : (
-        <div className="mt-3 grid gap-3 md:grid-cols-2">
-          {items.map((item) => (
-            <ActionCard
-              key={item.action.id}
-              item={item}
-              status={status}
-              onPerformAction={onPerformAction}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
 function ActionCard({
   item,
-  status,
   onPerformAction,
 }: {
   item: ActionCardItem;
-  status: "available" | "unavailable" | "done";
   onPerformAction: (action: PlayerAction) => void;
 }) {
+  const status = item.status;
   const disabled = status !== "available";
 
   return (
-    <button
-      type="button"
-      disabled={disabled}
-      onClick={() => onPerformAction(item.action)}
+    <article
       className={`rounded-md border p-3 text-left text-sm transition ${
         status === "available"
-          ? "border-emerald-400/50 bg-emerald-950/10 hover:border-emerald-300"
+          ? "border-emerald-400/50 bg-emerald-950/10"
           : status === "done"
-            ? "cursor-not-allowed border-sky-400/40 bg-sky-950/10"
-            : "cursor-not-allowed border-zinc-800 bg-zinc-950/40 opacity-60"
+            ? "border-sky-400/40 bg-sky-950/10"
+            : "border-zinc-800 bg-zinc-950/40 opacity-65"
       }`}
     >
       <span className="flex items-start justify-between gap-2">
@@ -172,7 +109,15 @@ function ActionCard({
           ✓ {formatDatedRecord(item.executedLog)} 実行済み: {item.executedLog.result}
         </span>
       ) : null}
-    </button>
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={() => onPerformAction(item.action)}
+        className="mt-3 h-9 w-full rounded-md bg-emerald-400 px-3 text-xs font-semibold text-zinc-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-300"
+      >
+        {status === "available" ? "実行する" : status === "done" ? "実行済み" : "実行不可"}
+      </button>
+    </article>
   );
 }
 

@@ -22,9 +22,9 @@ export function MatchPanel({
   const isOfficialActive = officialEntry?.active ?? false;
 
   return (
-    <section className="rounded-md border border-zinc-800 bg-zinc-900/88 p-5 backdrop-blur">
+    <section className="min-w-0 max-w-full rounded-md border border-zinc-800 bg-zinc-900/88 p-4 backdrop-blur sm:p-5">
       <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-        <div>
+        <div className="min-w-0">
           <h2 className="text-lg font-semibold">公式戦・試合レポート</h2>
           <p className="mt-2 text-sm leading-6 text-zinc-400">
             公式戦は一度エントリーすると4か月間、翌月進行時に毎月1試合ずつ自動実行されます。
@@ -47,7 +47,7 @@ export function MatchPanel({
             ? `参加中（残り${officialEntry?.remainingMonths ?? 0}か月）`
             : "未エントリー"}
         </p>
-        <p className="mt-1 text-xs text-zinc-500">
+        <p className="mt-1 break-words text-xs text-zinc-500">
           参加費 {MATCH_BALANCE.officialEntryFee.toLocaleString()}円
           {gameState.scheduledOfficialMatch
             ? ` / 次戦: ${formatDatedRecord(gameState.scheduledOfficialMatch)} ${gameState.scheduledOfficialMatch.opponentName} 戦`

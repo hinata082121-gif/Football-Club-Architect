@@ -46,8 +46,8 @@ export function RecordsScreen({ matches, clubName }: RecordsScreenProps) {
   }
 
   return (
-    <section className="grid gap-5">
-      <div className="grid gap-3 xl:grid-cols-4">
+    <section className="grid w-full max-w-full min-w-0 gap-5 overflow-hidden">
+      <div className="grid min-w-0 gap-3 xl:grid-cols-4">
         <RecordSummary title="全体成績" records={allRecords} />
         <RecordSummary title="公式戦成績" records={officialRecords} />
         <RecordSummary title="練習試合成績" records={trainingRecords} />
@@ -60,7 +60,7 @@ export function RecordsScreen({ matches, clubName }: RecordsScreenProps) {
         </section>
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+      <div className="grid min-w-0 gap-5 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
         <OpponentRecords records={opponentRecords} />
         <MatchDetail match={selectedMatch} clubName={clubName} />
       </div>
@@ -95,9 +95,9 @@ function RecordSummary({ title, records }: { title: string; records: MatchRecord
 
 function SmallRecord({ label, records }: { label: string; records: MatchRecordsSummary }) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-md border border-zinc-800 bg-zinc-950/50 p-3">
+    <div className="flex flex-col gap-1 rounded-md border border-zinc-800 bg-zinc-950/50 p-3 sm:flex-row sm:items-center sm:justify-between">
       <span className="text-zinc-300">{label}</span>
-      <span className="text-zinc-500">
+      <span className="break-words text-zinc-500">
         {records.totalMatches}試合 / {records.wins}勝 / 勝率 {records.winRate}%
       </span>
     </div>
@@ -118,13 +118,13 @@ function OpponentRecords({ records }: { records: OpponentRecord[] }) {
               className="rounded-md border border-zinc-800 bg-zinc-950/50 p-3 text-sm"
             >
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <div>
+                <div className="min-w-0">
                   <p className="font-semibold text-zinc-100">{record.opponentName}</p>
                   <p className="mt-1 text-xs text-zinc-500">
                     相手社長: {record.opponentOwnerName ?? "不明"}
                   </p>
                 </div>
-                <p className="text-xs text-zinc-400">
+                <p className="break-words text-xs text-zinc-400">
                   {record.totalMatches}試合 / {record.wins}勝{record.draws}分{record.losses}敗
                 </p>
               </div>
@@ -171,22 +171,22 @@ function MatchHistory({
               }`}
             >
               <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                <div>
-                  <p className="font-semibold text-zinc-100">
+                <div className="min-w-0">
+                  <p className="break-words font-semibold text-zinc-100">
                     {formatDatedRecord(match)} / <TypeLabel type={match.type} /> / {match.opponentName}
                   </p>
                   <p className="mt-1 text-xs text-zinc-500">
                     相手社長: {match.opponentOwnerName ?? "不明"} / {match.isHome ? "ホーム" : "アウェイ"}
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
                   <p className={`text-lg font-bold ${getResultClass(match.result)}`}>
                     {getResultLabel(match.result)} {match.goalsFor}-{match.goalsAgainst}
                   </p>
                   <button
                     type="button"
                     onClick={() => onSelectMatch(match.id)}
-                    className="h-9 rounded-md border border-zinc-700 px-3 text-xs font-semibold text-zinc-200 transition hover:border-emerald-300"
+                    className="h-9 w-full rounded-md border border-zinc-700 px-3 text-xs font-semibold text-zinc-200 transition hover:border-emerald-300 sm:w-auto"
                   >
                     詳細
                   </button>
