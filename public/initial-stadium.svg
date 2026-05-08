@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-label="Small local soccer stadium at dusk">
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#0f766e"/>
+      <stop offset="0.58" stop-color="#14532d"/>
+      <stop offset="1" stop-color="#052e16"/>
+    </linearGradient>
+    <linearGradient id="field" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#22c55e"/>
+      <stop offset="1" stop-color="#15803d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+  <path d="M0 520 C280 445 555 430 800 460 C1060 492 1280 450 1600 510 L1600 1000 L0 1000 Z" fill="#064e3b"/>
+  <path d="M120 400 L330 320 L1270 320 L1480 400 L1370 510 L230 510 Z" fill="#18181b"/>
+  <path d="M205 410 L360 355 L1240 355 L1395 410 L1315 470 L285 470 Z" fill="#3f3f46"/>
+  <g fill="#d4d4d8" opacity="0.6">
+    <rect x="380" y="374" width="55" height="20"/>
+    <rect x="455" y="374" width="55" height="20"/>
+    <rect x="530" y="374" width="55" height="20"/>
+    <rect x="605" y="374" width="55" height="20"/>
+    <rect x="680" y="374" width="55" height="20"/>
+    <rect x="755" y="374" width="55" height="20"/>
+    <rect x="830" y="374" width="55" height="20"/>
+    <rect x="905" y="374" width="55" height="20"/>
+    <rect x="980" y="374" width="55" height="20"/>
+    <rect x="1055" y="374" width="55" height="20"/>
+    <rect x="1130" y="374" width="55" height="20"/>
+  </g>
+  <path d="M130 710 C420 590 1160 590 1470 710 L1600 1000 L0 1000 Z" fill="url(#field)"/>
+  <path d="M280 742 C520 665 1075 665 1320 742 L1410 930 C1110 870 500 870 190 930 Z" fill="none" stroke="#dcfce7" stroke-width="8" opacity="0.75"/>
+  <path d="M800 670 L800 900" stroke="#dcfce7" stroke-width="7" opacity="0.75"/>
+  <ellipse cx="800" cy="760" rx="105" ry="38" fill="none" stroke="#dcfce7" stroke-width="7" opacity="0.75"/>
+  <path d="M470 700 L470 842 L310 878" fill="none" stroke="#dcfce7" stroke-width="7" opacity="0.75"/>
+  <path d="M1130 700 L1130 842 L1290 878" fill="none" stroke="#dcfce7" stroke-width="7" opacity="0.75"/>
+  <g fill="#fef3c7" opacity="0.82">
+    <circle cx="240" cy="250" r="18"/>
+    <circle cx="1360" cy="250" r="18"/>
+    <circle cx="310" cy="280" r="13"/>
+    <circle cx="1290" cy="280" r="13"/>
+  </g>
+</svg>

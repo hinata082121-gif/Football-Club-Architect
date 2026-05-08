@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Football Club Architect
 
-## Getting Started
+AIで創る名門クラブ。
+Football Club Architect は、AIクラブ経営シミュレーションのローカルMVPです。
+プレイヤーは監督ではなくクラブ社長として、資金、人材、ファン、評判、チーム戦力、スタッフAIへの委任、試合、練習試合を管理します。
 
-First, run the development server:
+## 技術構成
+
+- Next.js App Router
+- TypeScript
+- React
+- Tailwind CSS
+- ESLint
+- ローカル状態管理
+
+DB、認証、オンライン対戦、課金、リアル日程連動はMVPでは扱いません。
+
+## 開発コマンド
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
+npm run start
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## MVPの目的
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+まずはローカルで遊べるシングルプレイのプロトタイプを作ります。
+ターン制、社長の行動ポイント、クラブ指標、スタッフAI、自動試合、練習試合、ログ、レポートの流れを小さく実装し、ゲームとしての面白さと拡張性を検証します。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 現時点で実装する範囲
 
-## Learn More
+- Next.js + TypeScript + Tailwind CSS の初期構成
+- `/src/game` にゲームロジックの雛形を配置
+- `/src/types/game.ts` に主要な型定義を集約
+- `/src/game/balance.ts` に初期値と数値バランスを集約
+- ダッシュボード、行動、スタッフ、試合、練習試合、ログ、財務のUI雛形
+- ローカル状態で動く最小画面
 
-To learn more about Next.js, take a look at the following resources:
+## 今後の拡張予定
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- スタッフ雇用と委任レベル
+- スタッフAIの自動行動と理由ログ
+- 能力、性格、不満、AI精度による行動選択
+- 試合シミュレーション
+- 練習試合の経験値、連携、収入、ファン増加
+- ランダムイベント
+- 承認が必要な重大行動のワークフロー
+- バランス調整とテスト追加
+- 選手システム、スカウト候補、チーム編成、年齢・成長・衰退、監督への起用委託
+- 財務リカバリー導線、融資制度、債務超過ゲームオーバー
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 設計ドキュメント
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Game Design](./docs/game-design.md)
+- [Player System Design](./docs/player-system-design.md)
+- [Financial Recovery Design](./docs/financial-recovery-design.md)
+- [Alpha Roadmap](./docs/alpha-roadmap.md)
