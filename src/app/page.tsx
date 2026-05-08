@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dashboard } from "@/components/Dashboard";
 import { GameOverScreen } from "@/components/GameOverScreen";
 import { StartScreen } from "@/components/StartScreen";
@@ -41,10 +41,49 @@ import type {
   TrainingMatchType,
 } from "@/types/game";
 
+const SAVE_KEY = "football-club-architect-save-v1";
+
 export default function Home() {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [activeTab, setActiveTab] = useState<ActiveTab>("home");
+  const [isSaveLoaded, setIsSaveLoaded] = useState(false);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      try {
+        const saved = window.localStorage.getItem(SAVE_KEY);
+
+        if (saved) {
+          const parsed = JSON.parse(saved) as GameState;
+          setGameState(parsed);
+          setGameStarted(true);
+          setActiveTab("home");
+        }
+      } catch (error) {
+        console.error("Failed to load saved game:", error);
+        window.localStorage.removeItem(SAVE_KEY);
+      } finally {
+        setIsSaveLoaded(true);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
+  useEffect(() => {
+    if (!isSaveLoaded) {
+      return;
+    }
+
+    try {
+      if (gameStarted && gameState) {
+        window.localStorage.setItem(SAVE_KEY, JSON.stringify(gameState));
+      }
+    } catch (error) {
+      console.error("Failed to save game:", error);
+    }
+  }, [gameState, gameStarted, isSaveLoaded]);
 
   function handleStart(options: { clubName?: string; ownerName?: string }) {
     setGameState(createInitialGameState(options));
@@ -53,6 +92,12 @@ export default function Home() {
   }
 
   function handleResetGame() {
+    try {
+      window.localStorage.removeItem(SAVE_KEY);
+    } catch (error) {
+      console.error("Failed to reset saved game:", error);
+    }
+
     setGameState(null);
     setActiveTab("home");
     setGameStarted(false);
@@ -127,6 +172,16 @@ export default function Home() {
   function handleExecuteFinalRecoveryOption(option: FinalRecoveryOptionType) {
     setGameState((current) =>
       current ? updateBankruptcyState(executeFinalRecoveryOption(current, option)) : current,
+    );
+  }
+
+  if (!isSaveLoaded) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-white">
+        <div className="rounded-2xl bg-black/60 px-6 py-4">
+          セーブデータを読み込み中...
+        </div>
+      </div>
     );
   }
 
