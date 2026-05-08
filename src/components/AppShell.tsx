@@ -13,7 +13,8 @@ export type ActiveTab =
   | "records"
   | "finance"
   | "logs"
-  | "events";
+  | "events"
+  | "glossary";
 
 interface AppShellProps {
   gameState: GameState;

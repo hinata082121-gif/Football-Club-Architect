@@ -35,6 +35,20 @@ export type MatchType = "league" | "cup" | "training";
 
 export type MatchResult = "win" | "draw" | "lose" | "pending";
 
+export interface OfficialCompetitionEntry {
+  active: boolean;
+  entryYear: number;
+  entryMonth: number;
+  remainingMonths: number;
+  competitionType: "league" | "cup";
+  matchesPlayed: number;
+  wins: number;
+  draws: number;
+  losses: number;
+  goalsFor: number;
+  goalsAgainst: number;
+}
+
 export type OpponentPlayStyle =
   | "balanced"
   | "attacking"
@@ -640,8 +654,10 @@ export interface GameState {
   financeLogs: FinanceLog[];
   events: RandomEvent[];
   lastMatchReport: MatchReport | null;
+  lastMonthlyResultSummary?: MonthlyResultSummary;
   scheduledOfficialMatch: Match | null;
   hasEnteredOfficialCompetition: boolean;
+  officialCompetitionEntry?: OfficialCompetitionEntry;
   trainingMatchPlayedTurn: number | null;
 }
 
@@ -656,4 +672,47 @@ export interface CurrentMonthSummary {
   matches: Match[];
   eventLogs: ActionLog[];
   financeLogs: FinanceLog[];
+}
+
+export interface SummaryChange {
+  label: string;
+  before?: number;
+  after?: number;
+  delta?: number;
+  direction: "up" | "down" | "neutral";
+  tone: "positive" | "negative" | "neutral";
+}
+
+export interface MonthlyProgressConfirmation {
+  year: number;
+  month: number;
+  actionLogs: ActionLog[];
+  matches: Match[];
+  trainingMatches: Match[];
+  officialMatches: Match[];
+  resolvedEvents: ActionLog[];
+  remainingAp: number;
+  warnings: string[];
+  recommendations: string[];
+}
+
+export interface MonthlyResultSummary {
+  year: number;
+  month: number;
+  actionLogs: ActionLog[];
+  matches: Match[];
+  financeLogs: FinanceLog[];
+  moneyBefore?: number;
+  moneyAfter?: number;
+  fansBefore?: number;
+  fansAfter?: number;
+  reputationBefore?: number;
+  reputationAfter?: number;
+  teamPowerBefore?: number;
+  teamPowerAfter?: number;
+  conditionBefore?: number;
+  conditionAfter?: number;
+  keyChanges: SummaryChange[];
+  warnings: string[];
+  recommendations: string[];
 }

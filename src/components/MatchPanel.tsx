@@ -18,6 +18,8 @@ export function MatchPanel({
   onEnterOfficialCompetition,
 }: MatchPanelProps) {
   const canEnter = canEnterOfficialCompetition(gameState);
+  const officialEntry = gameState.officialCompetitionEntry;
+  const isOfficialActive = officialEntry?.active ?? false;
 
   return (
     <section className="rounded-md border border-zinc-800 bg-zinc-900/88 p-5 backdrop-blur">
@@ -25,7 +27,7 @@ export function MatchPanel({
         <div>
           <h2 className="text-lg font-semibold">公式戦・試合レポート</h2>
           <p className="mt-2 text-sm leading-6 text-zinc-400">
-            公式戦は翌月に自動実行されます。未参加でも練習試合で育成できます。
+            公式戦は一度エントリーすると4か月間、翌月進行時に毎月1試合ずつ自動実行されます。
           </p>
         </div>
         <button
@@ -34,15 +36,15 @@ export function MatchPanel({
           onClick={onEnterOfficialCompetition}
           className="rounded-md bg-emerald-400 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-40"
         >
-          公式戦にエントリー
+          {isOfficialActive ? "公式戦参加中" : "公式戦にエントリー"}
         </button>
       </div>
 
       <div className="mt-4 rounded-md border border-zinc-800 bg-zinc-950/50 p-3 text-sm text-zinc-300">
         <p>
           状態:{" "}
-          {gameState.hasEnteredOfficialCompetition
-            ? "エントリー済み"
+          {isOfficialActive
+            ? `参加中（残り${officialEntry?.remainingMonths ?? 0}か月）`
             : "未エントリー"}
         </p>
         <p className="mt-1 text-xs text-zinc-500">
@@ -51,6 +53,12 @@ export function MatchPanel({
             ? ` / 次戦: ${formatDatedRecord(gameState.scheduledOfficialMatch)} ${gameState.scheduledOfficialMatch.opponentName} 戦`
             : " / 予定なし"}
         </p>
+        {isOfficialActive ? (
+          <p className="mt-2 text-xs text-emerald-200">
+            4か月成績: {officialEntry?.wins ?? 0}勝{officialEntry?.draws ?? 0}分{officialEntry?.losses ?? 0}敗 /{" "}
+            得点{officialEntry?.goalsFor ?? 0}・失点{officialEntry?.goalsAgainst ?? 0}
+          </p>
+        ) : null}
         {gameState.scheduledOfficialMatch ? (
           <p className="mt-2 text-xs text-zinc-400">
             相手社長: {gameState.scheduledOfficialMatch.opponentOwnerName ?? "不明"} / Lv{" "}

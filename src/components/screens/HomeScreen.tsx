@@ -2,6 +2,7 @@ import { ECONOMY_BALANCE, TURN_BALANCE } from "@/game/balance";
 import type { ActiveTab } from "@/components/AppShell";
 import { BankruptcyWarningPanel } from "@/components/BankruptcyWarningPanel";
 import { FinanceWarningPanel } from "@/components/FinanceWarningPanel";
+import { MonthlyResultSummaryPanel } from "@/components/MonthlyResultSummaryPanel";
 import { getTeamPowerBreakdown } from "@/game/teamPowerEngine";
 import { getGameDateLabel } from "@/utils/date";
 import type { FinalRecoveryOptionType, GameState } from "@/types/game";
@@ -10,19 +11,37 @@ interface HomeScreenProps {
   gameState: GameState;
   onTabChange: (tab: ActiveTab) => void;
   onExecuteFinalRecoveryOption: (option: FinalRecoveryOptionType) => void;
+  dismissedMonthlySummaryKey: string | null;
+  onDismissMonthlySummary: () => void;
 }
 
 export function HomeScreen({
   gameState,
   onTabChange,
   onExecuteFinalRecoveryOption,
+  dismissedMonthlySummaryKey,
+  onDismissMonthlySummary,
 }: HomeScreenProps) {
   const recommendations = getRecommendations(gameState);
   const warnings = getWarnings(gameState);
   const teamPowerBreakdown = getTeamPowerBreakdown(gameState);
+  const monthlySummary = gameState.lastMonthlyResultSummary;
+  const monthlySummaryKey = monthlySummary
+    ? `${monthlySummary.year}-${monthlySummary.month}`
+    : null;
+  const showMonthlySummary =
+    Boolean(monthlySummary) && monthlySummaryKey !== dismissedMonthlySummaryKey;
+  const officialEntry = gameState.officialCompetitionEntry;
 
   return (
     <section className="grid gap-5">
+      {showMonthlySummary && monthlySummary ? (
+        <MonthlyResultSummaryPanel
+          summary={monthlySummary}
+          onDismiss={onDismissMonthlySummary}
+        />
+      ) : null}
+
       <div className="rounded-md border border-zinc-800 bg-zinc-900/88 p-5 backdrop-blur">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
@@ -55,6 +74,14 @@ export function HomeScreen({
           <Metric label="スポンサー力" value={gameState.club.sponsorPower.toString()} />
           <Metric label="クラブLv" value={gameState.club.clubLevel.toString()} />
         </div>
+
+        {officialEntry?.active ? (
+          <div className="mt-4 rounded-md border border-emerald-400/30 bg-emerald-950/20 p-3 text-sm text-emerald-100">
+            公式戦参加中: 残り{officialEntry.remainingMonths}か月 /{" "}
+            {officialEntry.wins}勝{officialEntry.draws}分{officialEntry.losses}敗 /{" "}
+            得点{officialEntry.goalsFor}・失点{officialEntry.goalsAgainst}
+          </div>
+        ) : null}
       </div>
 
       {gameState.financialHealth.status !== "healthy" ? (

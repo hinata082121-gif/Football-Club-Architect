@@ -13,7 +13,6 @@ import {
   getTeamPowerBreakdown,
   recalculateClubTeamPower,
 } from "@/game/teamPowerEngine";
-import { advanceGameMonth, formatYearMonth } from "@/utils/date";
 import { chance, randomInt } from "@/utils/random";
 import type {
   ActionLog,
@@ -108,7 +107,14 @@ export function simulateMatch(
 }
 
 export function canEnterOfficialCompetition(state: GameState): boolean {
-  return !state.hasEnteredOfficialCompetition && state.club.money >= MATCH_BALANCE.officialEntryFee;
+  const activeEntry = state.officialCompetitionEntry?.active ?? false;
+  const hasLegacyScheduledMatch = Boolean(state.scheduledOfficialMatch);
+
+  return (
+    !activeEntry &&
+    !hasLegacyScheduledMatch &&
+    state.club.money >= MATCH_BALANCE.officialEntryFee
+  );
 }
 
 export function enterOfficialCompetition(state: GameState): GameState {
@@ -116,36 +122,6 @@ export function enterOfficialCompetition(state: GameState): GameState {
     return state;
   }
 
-  const scheduledTurn = state.club.turn + 1;
-  const scheduledDate = advanceGameMonth(state.currentYear, state.currentMonth);
-  const opponent = findOfficialMatchOpponent(state);
-  const opponentInput = convertOpponentToMatchInput(opponent, "league");
-  const opponentPower = Math.max(
-    1,
-    (opponentInput.opponentPower ?? state.club.teamPower) +
-      randomInt(
-        -Math.floor(MATCH_BALANCE.officialOpponentVariance / 2),
-        Math.floor(MATCH_BALANCE.officialOpponentVariance / 2),
-      ),
-  );
-  const scheduledOfficialMatch: Match = {
-    id: `official-league-${scheduledTurn}-${Date.now()}`,
-    turn: scheduledTurn,
-    year: scheduledDate.year,
-    month: scheduledDate.month,
-    type: "league",
-    opponentName: opponent.clubName,
-    opponentClubId: opponent.id,
-    opponentOwnerName: opponent.ownerName,
-    opponentClubLevel: opponent.clubLevel,
-    opponentPlayStyle: opponent.playStyle,
-    opponentPower,
-    isHome: true,
-    result: "pending",
-    goalsFor: 0,
-    goalsAgainst: 0,
-    report: createPendingMatchReport(state, opponentPower),
-  };
   const nextMoney = state.club.money - MATCH_BALANCE.officialEntryFee;
   const actionLog: ActionLog = {
     id: `official-entry-${state.club.turn}-${Date.now()}`,
@@ -155,8 +131,8 @@ export function enterOfficialCompetition(state: GameState): GameState {
     actorType: "player",
     actorName: state.ownerName,
     actionName: "公式戦エントリー",
-    reason: "簡易リーグ戦に参加し、公式戦報酬とクラブ成長を狙うため。",
-    result: `参加費${MATCH_BALANCE.officialEntryFee.toLocaleString()}円を支払い、${formatYearMonth(scheduledDate.year, scheduledDate.month)}に${scheduledOfficialMatch.opponentName}（${opponent.ownerName}）戦を予定しました。`,
+    reason: "簡易リーグ戦に4か月参加し、公式戦報酬とクラブ成長を狙うため。",
+    result: `参加費${MATCH_BALANCE.officialEntryFee.toLocaleString()}円を支払い、4か月間の公式戦にエントリーしました。翌月から毎月1試合が自動開催されます。`,
     effects: {
       money: -MATCH_BALANCE.officialEntryFee,
     },
@@ -178,9 +154,90 @@ export function enterOfficialCompetition(state: GameState): GameState {
       money: nextMoney,
     },
     hasEnteredOfficialCompetition: true,
-    scheduledOfficialMatch,
+    scheduledOfficialMatch: null,
+    officialCompetitionEntry: {
+      active: true,
+      entryYear: state.currentYear,
+      entryMonth: state.currentMonth,
+      remainingMonths: 4,
+      competitionType: "league",
+      matchesPlayed: 0,
+      wins: 0,
+      draws: 0,
+      losses: 0,
+      goalsFor: 0,
+      goalsAgainst: 0,
+    },
     actionLogs: [actionLog, ...state.actionLogs],
     financeLogs: [financeLog, ...state.financeLogs],
+  };
+}
+
+export function playAutomaticOfficialCompetitionMatch(state: GameState): GameState {
+  const entry = state.officialCompetitionEntry;
+
+  if (!entry?.active || entry.remainingMonths <= 0) {
+    return state;
+  }
+
+  const opponent = findOfficialMatchOpponent(state);
+  const opponentInput = convertOpponentToMatchInput(opponent, entry.competitionType);
+  const opponentPower = Math.max(
+    1,
+    (opponentInput.opponentPower ?? state.club.teamPower) +
+      randomInt(
+        -Math.floor(MATCH_BALANCE.officialOpponentVariance / 2),
+        Math.floor(MATCH_BALANCE.officialOpponentVariance / 2),
+      ),
+  );
+  const matchInput: Partial<Match> = {
+    id: `official-${entry.competitionType}-${state.club.turn}-${Date.now()}`,
+    turn: state.club.turn,
+    year: state.currentYear,
+    month: state.currentMonth,
+    type: entry.competitionType,
+    opponentName: opponent.clubName,
+    opponentClubId: opponent.id,
+    opponentOwnerName: opponent.ownerName,
+    opponentClubLevel: opponent.clubLevel,
+    opponentPlayStyle: opponent.playStyle,
+    opponentPower,
+    isHome: entry.matchesPlayed % 2 === 0,
+  };
+  const { state: matchState, match } = simulateMatch(state, matchInput);
+  const remainingMonths = Math.max(0, entry.remainingMonths - 1);
+  const nextEntry = {
+    ...entry,
+    active: remainingMonths > 0,
+    remainingMonths,
+    matchesPlayed: entry.matchesPlayed + 1,
+    wins: entry.wins + (match.result === "win" ? 1 : 0),
+    draws: entry.draws + (match.result === "draw" ? 1 : 0),
+    losses: entry.losses + (match.result === "lose" ? 1 : 0),
+    goalsFor: entry.goalsFor + match.goalsFor,
+    goalsAgainst: entry.goalsAgainst + match.goalsAgainst,
+  };
+  const finished = remainingMonths === 0;
+  const summaryLog: ActionLog | null = finished
+    ? {
+        id: `official-season-summary-${state.club.turn}-${Date.now()}`,
+        turn: state.club.turn,
+        year: state.currentYear,
+        month: state.currentMonth,
+        actorType: "system",
+        actorName: "System",
+        actionName: "公式戦シーズン結果",
+        reason: "4か月間の公式戦エントリー期間が終了したため。",
+        result: `公式戦4か月の結果: ${nextEntry.wins}勝${nextEntry.draws}分${nextEntry.losses}敗、得点${nextEntry.goalsFor}、失点${nextEntry.goalsAgainst}でした。`,
+        effects: {},
+      }
+    : null;
+
+  return {
+    ...matchState,
+    officialCompetitionEntry: nextEntry,
+    hasEnteredOfficialCompetition: nextEntry.active,
+    actionLogs: summaryLog ? [summaryLog, ...matchState.actionLogs] : matchState.actionLogs,
   };
 }
 
@@ -593,40 +650,6 @@ function createMatchFinanceLog(
     category: "ticket",
     amount: moneyChange,
     description: `${match.opponentName}戦の試合収入`,
-  };
-}
-
-function createPendingMatchReport(state: GameState, opponentPower: number): MatchReport {
-  const teamPowerBreakdown = getTeamPowerBreakdown(state);
-
-  return {
-    summary: "公式戦は翌月に自動実行されます。",
-    reasons: ["エントリー済みの公式戦予定です。"],
-    positives: ["公式戦は練習試合より大きな報酬と経験値を得られます。"],
-    improvements: ["試合前に休養、連携強化、監督研修などで準備できます。"],
-    recommendedActions: ["試合前にコンディションと連携を確認しましょう。"],
-    scoreBreakdown: {
-      teamPower: teamPowerBreakdown.finalTeamPower,
-      startingPower: teamPowerBreakdown.startingPower,
-      benchDepth: teamPowerBreakdown.benchDepth,
-      conditionModifier: teamPowerBreakdown.conditionModifier,
-      teamworkModifier: teamPowerBreakdown.teamworkModifier,
-      coachModifier: teamPowerBreakdown.coachModifier,
-      teamwork: 0,
-      condition: 0,
-      coachLevel: state.coach.level,
-      tactics: 0,
-      inGameManagement: 0,
-      motivation: 0,
-      homeAdvantage: 0,
-      luck: 0,
-      total: teamPowerBreakdown.finalTeamPower,
-      opponentPower,
-      opponentLuck: 0,
-      opponentTotal: opponentPower,
-      powerDifference: teamPowerBreakdown.finalTeamPower - opponentPower,
-      teamPowerBreakdown,
-    },
   };
 }
 

@@ -2,6 +2,7 @@ import { AppShell, type ActiveTab } from "@/components/AppShell";
 import { ActionsScreen } from "@/components/screens/ActionsScreen";
 import { EventsScreen } from "@/components/screens/EventsScreen";
 import { FinanceScreen } from "@/components/screens/FinanceScreen";
+import { GlossaryPanel } from "@/components/GlossaryPanel";
 import { HomeScreen } from "@/components/screens/HomeScreen";
 import { LogsScreen } from "@/components/screens/LogsScreen";
 import { MatchesScreen } from "@/components/screens/MatchesScreen";
@@ -42,6 +43,8 @@ interface DashboardProps {
   onExecuteRecoveryAction: (actionType: RecoveryActionType) => void;
   onExecuteFinalRecoveryOption: (option: FinalRecoveryOptionType) => void;
   onResetGame: () => void;
+  dismissedMonthlySummaryKey: string | null;
+  onDismissMonthlySummary: () => void;
 }
 
 export function Dashboard({
@@ -65,6 +68,8 @@ export function Dashboard({
   onExecuteRecoveryAction,
   onExecuteFinalRecoveryOption,
   onResetGame,
+  dismissedMonthlySummaryKey,
+  onDismissMonthlySummary,
 }: DashboardProps) {
   const pendingEvents = gameState.events.filter((event) => event.status === "pending");
   const staffWarningCount = gameState.staff.filter(
@@ -92,6 +97,8 @@ export function Dashboard({
           gameState={gameState}
           onTabChange={onTabChange}
           onExecuteFinalRecoveryOption={onExecuteFinalRecoveryOption}
+          dismissedMonthlySummaryKey={dismissedMonthlySummaryKey}
+          onDismissMonthlySummary={onDismissMonthlySummary}
         />
       );
     }
@@ -147,6 +154,9 @@ export function Dashboard({
     }
     if (activeTab === "logs") {
       return <LogsScreen logs={gameState.actionLogs} />;
+    }
+    if (activeTab === "glossary") {
+      return <GlossaryPanel />;
     }
 
     return <EventsScreen gameState={gameState} events={gameState.events} onResolveEvent={onResolveEvent} />;

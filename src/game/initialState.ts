@@ -171,8 +171,10 @@ export function createInitialGameState(options?: InitialGameStateOptions): GameS
     ],
     events: [],
     lastMatchReport: null,
+    lastMonthlyResultSummary: undefined,
     scheduledOfficialMatch: null,
     hasEnteredOfficialCompetition: false,
+    officialCompetitionEntry: undefined,
     trainingMatchPlayedTurn: null,
   };
 

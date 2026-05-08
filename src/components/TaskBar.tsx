@@ -17,6 +17,7 @@ const TABS: { id: ActiveTab; label: string }[] = [
   { id: "finance", label: "財務" },
   { id: "logs", label: "ログ" },
   { id: "events", label: "イベント" },
+  { id: "glossary", label: "用語" },
 ];
 
 export function TaskBar({

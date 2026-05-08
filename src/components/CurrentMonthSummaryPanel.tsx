@@ -1,6 +1,7 @@
+import { EffectDeltaBadge } from "@/components/EffectDeltaBadge";
 import { getCurrentMonthSummary } from "@/game/currentMonthSummaryEngine";
 import { formatDatedRecord } from "@/utils/date";
-import type { GameState, Match, StatEffects } from "@/types/game";
+import type { GameState, Match, StatEffects, SummaryChange } from "@/types/game";
 
 interface CurrentMonthSummaryPanelProps {
   gameState: GameState;
@@ -51,7 +52,17 @@ export function CurrentMonthSummaryPanel({
                   <p className="font-semibold text-zinc-100">{item.label}</p>
                   <p className="mt-1 text-xs leading-5 text-zinc-400">{item.detail}</p>
                 </div>
-                <p className="text-xs text-zinc-500">{formatEffects(item.effects)}</p>
+                <div className="flex max-w-md flex-wrap gap-2">
+                  {toEffectBadges(item.effects).map((effect) => (
+                    <EffectDeltaBadge
+                      key={`${item.id}-${effect.label}`}
+                      label={effect.label}
+                      value={effect.value}
+                      direction={effect.direction}
+                      tone={effect.tone}
+                    />
+                  ))}
+                </div>
               </div>
             </li>
           ))}
@@ -67,17 +78,60 @@ function getMatchLabel(match: Match): string {
   return `${typeLabel}: ${formatDatedRecord(match)} ${match.opponentName}戦`;
 }
 
-function formatEffects(effects: StatEffects): string {
+function toEffectBadges(effects: StatEffects): {
+  label: string;
+  value: string;
+  direction: SummaryChange["direction"];
+  tone: SummaryChange["tone"];
+}[] {
   const entries = Object.entries(effects).filter(([, value]) => value !== undefined && value !== 0);
 
   if (entries.length === 0) {
-    return "変化なし";
+    return [
+      {
+        label: "効果",
+        value: "変化なし",
+        direction: "neutral",
+        tone: "neutral",
+      },
+    ];
   }
 
   return entries
     .slice(0, 4)
-    .map(([key, value]) => `${getEffectLabel(key as keyof StatEffects)} ${Number(value) > 0 ? "+" : ""}${value}`)
-    .join(" / ");
+    .map(([key, value]) => {
+      const statKey = key as keyof StatEffects;
+      const numericValue = Number(value);
+
+      return {
+        label: getEffectLabel(statKey),
+        value: formatEffectValue(statKey, numericValue),
+        direction: numericValue > 0 ? "up" : numericValue < 0 ? "down" : "neutral",
+        tone: getEffectTone(statKey, numericValue),
+      };
+    });
+}
+
+function formatEffectValue(key: keyof StatEffects, value: number): string {
+  const prefix = value > 0 ? "+" : "";
+
+  if (key === "money") {
+    return `${prefix}${value.toLocaleString()}円`;
+  }
+
+  return `${prefix}${value}`;
+}
+
+function getEffectTone(key: keyof StatEffects, value: number): SummaryChange["tone"] {
+  if (value === 0) {
+    return "neutral";
+  }
+
+  const negativeWhenUp: (keyof StatEffects)[] = ["staffDissatisfaction"];
+  const positiveWhenUp = !negativeWhenUp.includes(key);
+  const isPositive = value > 0 ? positiveWhenUp : !positiveWhenUp;
+
+  return isPositive ? "positive" : "negative";
 }
 
 function getEffectLabel(key: keyof StatEffects): string {

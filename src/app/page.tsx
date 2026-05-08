@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Dashboard } from "@/components/Dashboard";
 import { GameOverScreen } from "@/components/GameOverScreen";
+import { MonthAdvanceConfirmModal } from "@/components/MonthAdvanceConfirmModal";
 import { StartScreen } from "@/components/StartScreen";
 import type { ActiveTab } from "@/components/AppShell";
 import {
@@ -17,6 +18,7 @@ import { renewPlayerContract } from "@/game/contractEngine";
 import { createInitialGameState } from "@/game/initialState";
 import { takeLoan } from "@/game/loanEngine";
 import { enterOfficialCompetition } from "@/game/matchEngine";
+import { createMonthlyResultSummary } from "@/game/monthlySummaryEngine";
 import { performPlayerAction } from "@/game/playerActionEngine";
 import { executeRecoveryAction } from "@/game/recoveryActionEngine";
 import { playTrainingMatch } from "@/game/trainingMatchEngine";
@@ -48,6 +50,8 @@ export default function Home() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [activeTab, setActiveTab] = useState<ActiveTab>("home");
   const [isSaveLoaded, setIsSaveLoaded] = useState(false);
+  const [isAdvanceConfirmOpen, setIsAdvanceConfirmOpen] = useState(false);
+  const [dismissedMonthlySummaryKey, setDismissedMonthlySummaryKey] = useState<string | null>(null);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -56,7 +60,7 @@ export default function Home() {
 
         if (saved) {
           const parsed = JSON.parse(saved) as GameState;
-          setGameState(parsed);
+          setGameState(normalizeLoadedGameState(parsed));
           setGameStarted(true);
           setActiveTab("home");
         }
@@ -88,6 +92,8 @@ export default function Home() {
   function handleStart(options: { clubName?: string; ownerName?: string }) {
     setGameState(createInitialGameState(options));
     setActiveTab("home");
+    setIsAdvanceConfirmOpen(false);
+    setDismissedMonthlySummaryKey(null);
     setGameStarted(true);
   }
 
@@ -100,6 +106,8 @@ export default function Home() {
 
     setGameState(null);
     setActiveTab("home");
+    setIsAdvanceConfirmOpen(false);
+    setDismissedMonthlySummaryKey(null);
     setGameStarted(false);
   }
 
@@ -108,7 +116,37 @@ export default function Home() {
   }
 
   function handleAdvanceTurn() {
-    setGameState((current) => (current ? advanceTurn(current) : current));
+    setIsAdvanceConfirmOpen(true);
+  }
+
+  function handleConfirmAdvanceTurn() {
+    setGameState((current) => {
+      if (!current) {
+        return current;
+      }
+
+      const before = current;
+      const after = advanceTurn(current);
+      const summary = createMonthlyResultSummary(before, after);
+
+      return {
+        ...after,
+        lastMonthlyResultSummary: summary,
+      };
+    });
+    setDismissedMonthlySummaryKey(null);
+    setIsAdvanceConfirmOpen(false);
+    setActiveTab("home");
+  }
+
+  function handleDismissMonthlySummary() {
+    const summary = gameState?.lastMonthlyResultSummary;
+
+    if (!summary) {
+      return;
+    }
+
+    setDismissedMonthlySummaryKey(`${summary.year}-${summary.month}`);
   }
 
   function handleTrainingMatch(type: TrainingMatchType, opponent?: OpponentClub) {
@@ -200,27 +238,76 @@ export default function Home() {
   }
 
   return (
-    <Dashboard
-      gameState={gameState}
-      activeTab={activeTab}
-      onTabChange={setActiveTab}
-      onAdvanceTurn={handleAdvanceTurn}
-      onPlayerAction={handlePlayerAction}
-      onTrainingMatch={handleTrainingMatch}
-      onResolveEvent={handleResolveEvent}
-      onDelegationChange={handleDelegationChange}
-      onEnterOfficialCompetition={handleEnterOfficialCompetition}
-      onScoutFocusChange={handleScoutFocusChange}
-      onSignScoutedPlayer={handleSignScoutedPlayer}
-      onTransferListedChange={handleTransferListedChange}
-      onReleasePlayer={handleReleasePlayer}
-      onCoachSelectionPolicyChange={handleCoachSelectionPolicyChange}
-      onAutoSelectSquadByCoach={handleAutoSelectSquadByCoach}
-      onRenewPlayerContract={handleRenewPlayerContract}
-      onTakeLoan={handleTakeLoan}
-      onExecuteRecoveryAction={handleExecuteRecoveryAction}
-      onExecuteFinalRecoveryOption={handleExecuteFinalRecoveryOption}
-      onResetGame={handleResetGame}
-    />
+    <>
+      <Dashboard
+        gameState={gameState}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        onAdvanceTurn={handleAdvanceTurn}
+        onPlayerAction={handlePlayerAction}
+        onTrainingMatch={handleTrainingMatch}
+        onResolveEvent={handleResolveEvent}
+        onDelegationChange={handleDelegationChange}
+        onEnterOfficialCompetition={handleEnterOfficialCompetition}
+        onScoutFocusChange={handleScoutFocusChange}
+        onSignScoutedPlayer={handleSignScoutedPlayer}
+        onTransferListedChange={handleTransferListedChange}
+        onReleasePlayer={handleReleasePlayer}
+        onCoachSelectionPolicyChange={handleCoachSelectionPolicyChange}
+        onAutoSelectSquadByCoach={handleAutoSelectSquadByCoach}
+        onRenewPlayerContract={handleRenewPlayerContract}
+        onTakeLoan={handleTakeLoan}
+        onExecuteRecoveryAction={handleExecuteRecoveryAction}
+        onExecuteFinalRecoveryOption={handleExecuteFinalRecoveryOption}
+        onResetGame={handleResetGame}
+        dismissedMonthlySummaryKey={dismissedMonthlySummaryKey}
+        onDismissMonthlySummary={handleDismissMonthlySummary}
+      />
+      {isAdvanceConfirmOpen ? (
+        <MonthAdvanceConfirmModal
+          gameState={gameState}
+          onCancel={() => setIsAdvanceConfirmOpen(false)}
+          onConfirm={handleConfirmAdvanceTurn}
+        />
+      ) : null}
+    </>
   );
+}
+
+function normalizeLoadedGameState(saved: GameState): GameState {
+  const fallback = createInitialGameState({
+    clubName: saved.club?.name,
+    ownerName: saved.ownerName,
+  });
+  const officialCompetitionEntry = saved.officialCompetitionEntry;
+
+  return {
+    ...fallback,
+    ...saved,
+    club: {
+      ...fallback.club,
+      ...saved.club,
+    },
+    coach: {
+      ...fallback.coach,
+      ...saved.coach,
+    },
+    staff: saved.staff ?? fallback.staff,
+    players: saved.players ?? fallback.players,
+    scoutedPlayers: saved.scoutedPlayers ?? fallback.scoutedPlayers,
+    matches: saved.matches ?? [],
+    actionLogs: saved.actionLogs ?? [],
+    financeLogs: saved.financeLogs ?? [],
+    events: saved.events ?? [],
+    loans: saved.loans ?? [],
+    contractAlerts: saved.contractAlerts ?? [],
+    bankruptcyState: saved.bankruptcyState ?? fallback.bankruptcyState,
+    financialHealth: saved.financialHealth ?? fallback.financialHealth,
+    sponsorAdvance: saved.sponsorAdvance,
+    lastMonthlyResultSummary: saved.lastMonthlyResultSummary,
+    officialCompetitionEntry,
+    hasEnteredOfficialCompetition: Boolean(
+      officialCompetitionEntry?.active || saved.scheduledOfficialMatch,
+    ),
+  };
 }

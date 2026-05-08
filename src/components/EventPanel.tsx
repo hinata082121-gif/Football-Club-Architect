@@ -1,5 +1,13 @@
+import { EffectDeltaBadge } from "@/components/EffectDeltaBadge";
 import { formatDatedRecord } from "@/utils/date";
-import type { EventChoice, GameState, RandomEvent, RandomEventCategory, StatEffects } from "@/types/game";
+import type {
+  EventChoice,
+  GameState,
+  RandomEvent,
+  RandomEventCategory,
+  StatEffects,
+  SummaryChange,
+} from "@/types/game";
 
 interface EventPanelProps {
   events: RandomEvent[];
@@ -109,8 +117,17 @@ function ChoiceButton({
       </span>
       <span className="mt-1 block text-xs leading-5 text-zinc-400">{choice.description}</span>
       <span className="mt-2 block text-xs text-zinc-500">必要条件: {moneyCost > 0 ? `資金 ${moneyCost.toLocaleString()}円以上` : "なし"}</span>
-      <span className="mt-1 block text-xs text-zinc-500">費用: {moneyCost.toLocaleString()}円</span>
-      <span className="mt-1 block text-xs text-zinc-500">主な効果: {choice.effectPreview ?? summarizeEffects(choice.effects)}</span>
+      <span className="mt-2 flex flex-wrap gap-2">
+        {toEffectBadges(choice.effects, choice.effectPreview).map((effect) => (
+          <EffectDeltaBadge
+            key={`${choice.id}-${effect.label}`}
+            label={effect.label}
+            value={effect.value}
+            direction={effect.direction}
+            tone={effect.tone}
+          />
+        ))}
+      </span>
       {disabledReason ? (
         <span className="mt-2 block text-xs text-amber-300">理由: {disabledReason}</span>
       ) : null}
@@ -128,27 +145,84 @@ function getChoiceDisabledReason(state: GameState, choice: EventChoice): string 
   return choice.disabledReason ?? null;
 }
 
-function summarizeEffects(effects: StatEffects): string {
-  const summaries: string[] = [];
+function toEffectBadges(
+  effects: StatEffects,
+  fallbackPreview?: string,
+): {
+  label: string;
+  value: string;
+  direction: SummaryChange["direction"];
+  tone: SummaryChange["tone"];
+}[] {
+  const entries = Object.entries(effects).filter(([, value]) => value !== undefined && value !== 0);
 
-  if ((effects.money ?? 0) > 0) summaries.push("資金増");
-  if ((effects.money ?? 0) < 0) summaries.push("資金を使う");
-  if ((effects.fans ?? 0) > 0) summaries.push("ファン増");
-  if ((effects.reputation ?? 0) > 0) summaries.push("評判増");
-  if ((effects.teamPower ?? 0) > 0) summaries.push("戦力成長");
-  if ((effects.teamwork ?? 0) > 0) summaries.push("連携改善");
-  if ((effects.teamwork ?? 0) < 0) summaries.push("連携リスク");
-  if ((effects.condition ?? 0) > 0) summaries.push("コンディション回復");
-  if ((effects.condition ?? 0) < 0) summaries.push("コンディション低下");
-  if ((effects.sponsorPower ?? 0) > 0) summaries.push("スポンサー力増");
-  if ((effects.coachExperience ?? 0) > 0 || (effects.coachDevelopment ?? 0) > 0) {
-    summaries.push("監督成長");
+  if (entries.length === 0) {
+    return [
+      {
+        label: fallbackPreview ?? "効果",
+        value: "変化なし",
+        direction: "neutral",
+        tone: "neutral",
+      },
+    ];
   }
-  if ((effects.staffDissatisfaction ?? 0) < 0) summaries.push("不満低下");
-  if ((effects.staffDissatisfaction ?? 0) > 0) summaries.push("不満上昇");
-  if ((effects.staffLoyalty ?? 0) > 0) summaries.push("忠誠上昇");
 
-  return summaries.length > 0 ? summaries.join(" / ") : "安全に様子を見る";
+  return entries.map(([key, value]) => {
+    const statKey = key as keyof StatEffects;
+    const numericValue = Number(value);
+
+    return {
+      label: getEffectLabel(statKey),
+      value: formatEffectValue(statKey, numericValue),
+      direction: numericValue > 0 ? "up" : numericValue < 0 ? "down" : "neutral",
+      tone: getEffectTone(statKey, numericValue),
+    };
+  });
+}
+
+function formatEffectValue(key: keyof StatEffects, value: number): string {
+  const prefix = value > 0 ? "+" : "";
+
+  if (key === "money") {
+    return `${prefix}${value.toLocaleString()}円`;
+  }
+
+  return `${prefix}${value}`;
+}
+
+function getEffectTone(key: keyof StatEffects, value: number): SummaryChange["tone"] {
+  if (value === 0) {
+    return "neutral";
+  }
+
+  const negativeWhenUp: (keyof StatEffects)[] = ["staffDissatisfaction"];
+  const positiveWhenUp = !negativeWhenUp.includes(key);
+  const isPositive = value > 0 ? positiveWhenUp : !positiveWhenUp;
+
+  return isPositive ? "positive" : "negative";
+}
+
+function getEffectLabel(key: keyof StatEffects): string {
+  const labels: Record<keyof StatEffects, string> = {
+    money: "資金",
+    fans: "ファン",
+    reputation: "評判",
+    teamPower: "戦力",
+    teamwork: "連携",
+    condition: "体調",
+    actionPoints: "AP",
+    clubLevel: "クラブLv",
+    stadiumCapacity: "収容人数",
+    goodsPower: "グッズ",
+    sponsorPower: "スポンサー",
+    coachExperience: "監督経験",
+    coachLevel: "監督Lv",
+    coachDevelopment: "育成力",
+    staffDissatisfaction: "不満",
+    staffLoyalty: "忠誠",
+  };
+
+  return labels[key];
 }
 
 function getEventCardClass(category: RandomEventCategory): string {

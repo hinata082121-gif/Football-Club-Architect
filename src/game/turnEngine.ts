@@ -13,7 +13,10 @@ import {
 import { maybeGenerateRandomEvent } from "@/game/eventEngine";
 import { updateFinancialHealth } from "@/game/financeHealthEngine";
 import { applyMonthlyLoanPayments } from "@/game/loanEngine";
-import { simulateMatch } from "@/game/matchEngine";
+import {
+  playAutomaticOfficialCompetitionMatch,
+  simulateMatch,
+} from "@/game/matchEngine";
 import { updatePlayersMonthly } from "@/game/playerDevelopmentEngine";
 import { applySponsorAdvancePenaltyMonthly } from "@/game/recoveryActionEngine";
 import { removeExpiredScoutedPlayers } from "@/game/scoutEngine";
@@ -33,7 +36,8 @@ export function advanceTurn(state: GameState): GameState {
   const recoveryPenaltyState = applySponsorAdvancePenaltyMonthly(loanPaymentState);
   const scoutState = removeExpiredScoutedPlayers(recoveryPenaltyState);
   const eventState = maybeGenerateRandomEvent(scoutState);
-  const recalculatedState = recalculateClubTeamPower(eventState);
+  const officialMatchState = playAutomaticOfficialCompetitionMatch(eventState);
+  const recalculatedState = recalculateClubTeamPower(officialMatchState);
 
   return updateBankruptcyState(updateFinancialHealth(prepareScheduledOfficialMatch(recalculatedState)));
 }
