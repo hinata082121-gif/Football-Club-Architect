@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: "Football Club Architect",
   description: "AIで創る名門クラブ。ローカルで遊べるAIクラブ経営シミュレーション。",
   applicationName: "Football Club Architect",
+  other: {
+    "google-adsense-account": "ca-pub-1305303366441643",
+  },
 };
 
 export default function RootLayout({
