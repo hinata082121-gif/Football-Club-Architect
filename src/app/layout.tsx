@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { AdSenseScript } from "@/components/ads/AdSenseScript";
+import { SiteFooter } from "@/components/site/SiteFooter";
+import { SiteHeader } from "@/components/site/SiteHeader";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,7 +17,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" className="h-full">
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <AdSenseScript />
+        <SiteHeader />
+        {children}
+        <SiteFooter />
+      </body>
     </html>
   );
 }

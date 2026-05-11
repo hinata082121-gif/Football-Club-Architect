@@ -215,7 +215,7 @@ export default function Home() {
 
   if (!isSaveLoaded) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-white">
+      <div id="play" className="flex min-h-screen items-center justify-center bg-slate-950 text-white">
         <div className="rounded-2xl bg-black/60 px-6 py-4">
           セーブデータを読み込み中...
         </div>
@@ -224,21 +224,27 @@ export default function Home() {
   }
 
   if (!gameStarted || !gameState) {
-    return <StartScreen onStart={handleStart} />;
+    return (
+      <div id="play">
+        <StartScreen onStart={handleStart} />
+      </div>
+    );
   }
 
   if (gameState.isGameOver || gameState.bankruptcyState.isBankrupt) {
     return (
-      <GameOverScreen
-        gameState={gameState}
-        onRestart={handleResetGame}
-        onDownsizeRestart={() => handleExecuteFinalRecoveryOption("downsize_club")}
-      />
+      <div id="play">
+        <GameOverScreen
+          gameState={gameState}
+          onRestart={handleResetGame}
+          onDownsizeRestart={() => handleExecuteFinalRecoveryOption("downsize_club")}
+        />
+      </div>
     );
   }
 
   return (
-    <>
+    <div id="play">
       <Dashboard
         gameState={gameState}
         activeTab={activeTab}
@@ -270,7 +276,7 @@ export default function Home() {
           onConfirm={handleConfirmAdvanceTurn}
         />
       ) : null}
-    </>
+    </div>
   );
 }
 

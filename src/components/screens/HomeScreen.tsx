@@ -1,6 +1,7 @@
 import { ECONOMY_BALANCE, TURN_BALANCE } from "@/game/balance";
 import type { ActiveTab } from "@/components/AppShell";
 import { BankruptcyWarningPanel } from "@/components/BankruptcyWarningPanel";
+import { AdSenseAd } from "@/components/ads/AdSenseAd";
 import { FinanceWarningPanel } from "@/components/FinanceWarningPanel";
 import { MonthlyResultSummaryPanel } from "@/components/MonthlyResultSummaryPanel";
 import { getTeamPowerBreakdown } from "@/game/teamPowerEngine";
@@ -158,6 +159,12 @@ export function HomeScreen({
           )}
         </div>
       </div>
+
+      <AdSenseAd
+        slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER}
+        format="horizontal"
+        className="mt-2"
+      />
     </section>
   );
 }
