@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { AdSenseScript } from "@/components/ads/AdSenseScript";
+import Script from "next/script";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import "./globals.css";
@@ -18,7 +18,13 @@ export default function RootLayout({
   return (
     <html lang="ja" className="h-full">
       <body className="min-h-full flex flex-col">
-        <AdSenseScript />
+        <Script
+          id="adsense-site-verification"
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1305303366441643"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
         <SiteHeader />
         {children}
         <SiteFooter />
