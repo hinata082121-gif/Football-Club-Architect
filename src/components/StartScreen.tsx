@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 import {
   CLUB_NAME_MAX_LENGTH,
@@ -32,7 +33,42 @@ export function StartScreen({ onStart }: StartScreenProps) {
           "linear-gradient(rgba(9, 9, 11, 0.5), rgba(9, 9, 11, 0.82)), url('/initial-stadium.svg')",
       }}
     >
-      <section className="w-full max-w-md rounded-md border border-zinc-700 bg-zinc-950/88 p-6 shadow-2xl backdrop-blur">
+      <section className="grid w-full max-w-6xl gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="rounded-md border border-zinc-700 bg-zinc-950/88 p-6 shadow-2xl backdrop-blur">
+          <p className="text-sm font-medium text-emerald-300">Football Club Architect</p>
+          <h1 className="mt-3 text-3xl font-semibold tracking-normal sm:text-4xl">AIで創る名門クラブ</h1>
+          <p className="mt-4 text-sm leading-7 text-zinc-300">
+            弱小サッカークラブの社長として、AIスタッフ、監督、スカウト、選手契約、財務判断を組み合わせてクラブを育てるブラウザゲームです。試合操作ではなく、経営判断と委任設計が中心です。
+          </p>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            {[
+              "AIスタッフに広報・営業・分析・スカウトを委任",
+              "選手の年齢、成長、衰退、契約を管理",
+              "公式戦4か月自動開催と練習試合で育成",
+              "融資やスポンサー前借りで財務を再建",
+            ].map((item) => (
+              <div key={item} className="rounded-md border border-zinc-800 bg-zinc-900/70 p-3 text-xs leading-5 text-zinc-300">
+                {item}
+              </div>
+            ))}
+          </div>
+          <p className="mt-5 text-xs leading-5 text-zinc-500">
+            現在はα版です。セーブデータはこのブラウザのlocalStorageに保存されます。ブラウザデータを削除するとセーブも失われる場合があります。
+          </p>
+          <div className="mt-5 flex flex-wrap gap-3 text-xs">
+            <Link href="/how-to-play" className="rounded-md border border-zinc-700 px-3 py-2 text-zinc-200 hover:border-emerald-300">
+              遊び方
+            </Link>
+            <Link href="/privacy" className="rounded-md border border-zinc-700 px-3 py-2 text-zinc-200 hover:border-emerald-300">
+              プライバシー
+            </Link>
+            <Link href="/terms" className="rounded-md border border-zinc-700 px-3 py-2 text-zinc-200 hover:border-emerald-300">
+              利用規約
+            </Link>
+          </div>
+        </div>
+
+      <section className="w-full rounded-md border border-zinc-700 bg-zinc-950/88 p-6 shadow-2xl backdrop-blur">
         <p className="text-sm font-medium text-emerald-300">Football Club Architect</p>
         <h1 className="mt-3 text-3xl font-semibold tracking-normal">AIで創る名門クラブ</h1>
         <p className="mt-3 text-sm leading-6 text-zinc-300">
@@ -75,6 +111,7 @@ export function StartScreen({ onStart }: StartScreenProps) {
             ゲーム開始
           </button>
         </form>
+      </section>
       </section>
     </main>
   );

@@ -1,44 +1,86 @@
 # AdSense Readiness Checklist
 
-Football Club Architectを広告収益化に対応できる構造へ整えるための内部確認リストです。承認を保証するものではなく、公開前の品質確認に使います。
+Football Club Architectを広告収益化に対応できる構造へ整えるための内部確認リストです。承認を保証するものではなく、再審査前の品質確認に使います。
 
 ## 固定ページ
 
-- [ ] Aboutページが存在し、ゲーム概要、社長視点、AIスタッフ、α版、localStorage保存を説明している
-- [ ] How to Playページが存在し、開始方法、月次進行、社長アクション、スタッフ委任、試合、財務を説明している
-- [ ] Featuresページが存在し、独自機能を十分な文章量で説明している
-- [ ] FAQページが存在し、保存仕様、スマホ対応、公式戦、練習試合、財務破綻、広告の扱いを説明している
-- [ ] Contactページが存在し、問い合わせ、バグ報告、広告・プライバシー連絡の導線がある
-- [ ] Privacy Policy、Terms、Disclaimerが存在する
+- [ ] `/about` が存在し、社長視点、AIスタッフ、監督AI、スカウト、財務、α版、localStorage保存を説明している
+- [ ] `/how-to-play` が存在し、開始方法、月次進行、AP、社長アクション、公式戦、練習試合、財務再建を説明している
+- [ ] `/features` が存在し、独自機能を箇条書きだけでなく本文付きで説明している
+- [ ] `/faq` が存在し、広告がゲーム報酬に影響しないことを明記している
+- [ ] `/contact` が存在し、バグ報告、改善要望、広告・プライバシー問い合わせの導線がある
+- [ ] `/privacy`、`/terms`、`/disclaimer` が存在する
+- [ ] `/glossary` が存在し、AP、委任レベル、スカウト方針、債務超過、localStorageなどを説明している
+- [ ] `/updates` が存在し、継続開発されている独自プロジェクトであることが分かる
 
-## ナビゲーション
+## 内容充実度
 
-- [ ] HeaderからHome、Play、How to Play、Features、FAQ、Aboutへ移動できる
-- [ ] FooterからAbout、Contact、Privacy Policy、Terms、Disclaimerへ移動できる
-- [ ] リンク切れがない
-- [ ] スマホでもナビゲーションが横スクロールまたは折り返しで利用できる
+- [ ] 空ページがない
+- [ ] 「準備中」だけのページがない
+- [ ] 1〜2行だけの薄い固定ページがない
+- [ ] トップページにゲーム概要、特徴、α版、localStorage保存、固定ページへのリンクがある
+- [ ] how-to-playだけで初回ユーザーが基本操作を理解できる
+- [ ] featuresがゲームの独自性を説明している
+- [ ] FAQが実用的で、広告閲覧によるゲーム報酬がないことを説明している
 
-## 広告配置
+## Header / Footer
+
+- [ ] HeaderからPlay、How to Play、Features、FAQ、Updatesへ移動できる
+- [ ] FooterからAbout、Contact、Privacy Policy、Terms、Disclaimer、Glossaryへ移動できる
+- [ ] 404リンクがない
+- [ ] スマホでもHeader/Footerリンクが画面外に破綻しない
+- [ ] リンク文言が広告や報酬導線に見えない
+
+## 広告配置安全性
 
 - [ ] 広告は環境変数で有効化される
-- [ ] 本番環境以外ではAdSense scriptを読み込まない
-- [ ] 広告がゲーム開始ボタン、社長アクション、試合実行、翌月進行ボタンの近くにない
-- [ ] 広告をゲーム報酬、支援、ナビゲーションと誤認させる表現がない
-- [ ] 広告クリックを促す文言がない
-- [ ] スマホで広告が画面上部や操作カード間に大きく表示されない
+- [ ] ゲーム開始ボタン、社長アクション、翌月進行、試合実行、練習試合、公式戦エントリー付近に広告がない
+- [ ] モーダル内に広告がない
+- [ ] ローディング画面、エラー画面、空状態画面、GameOver直後の操作選択だけの画面に広告がない
+- [ ] 広告クリックを促す表現がない
+- [ ] 広告閲覧でゲーム内報酬を与える仕様がない
+- [ ] 広告枠には必要に応じて「広告」またはAdvertisementのラベルを使う
+- [ ] `NEXT_PUBLIC_ENABLE_ADS=false` でもサイト品質が成立する
 
-## コンテンツ品質
+## Privacy / Terms / Disclaimer / Contact
 
-- [ ] 空ページや1〜2行だけの薄いページがない
-- [ ] ゲーム本体以外にも独自説明コンテンツがある
-- [ ] localStorage保存の仕様と限界が明記されている
-- [ ] 広告がゲーム進行に影響しないことを説明している
-- [ ] フィクション性と外部広告に関する免責がある
+- [ ] PrivacyにlocalStorage、Cookie、Google AdSense、第三者配信事業者、問い合わせ情報、第三者提供、外部リンクを記載している
+- [ ] Termsにα版、セーブデータ、禁止事項、不正利用、広告表示、サービス変更、免責を記載している
+- [ ] Disclaimerにフィクション性、実在団体との無関係、データ変更、localStorage消失、外部リンクや広告の免責を記載している
+- [ ] Contactに問い合わせ目的、バグ報告、改善要望、広告・プライバシー問い合わせ、返信保証なしを記載している
 
-## 技術確認
+## SEO / クロール
+
+- [ ] 各固定ページに固有のtitleとdescriptionがある
+- [ ] `public/robots.txt` が存在し、サイト全体をDisallowしていない
+- [ ] `src/app/sitemap.ts` が存在し、主要固定ページが含まれている
+- [ ] `NEXT_PUBLIC_SITE_URL` が `https://football-club-architect.vercel.app` または本番ドメインに設定されている
+- [ ] `robots.txt` のSitemap URLが公開ドメインと一致している
+
+## AdSense確認タグ
+
+- [ ] `google-adsense-account` metaがheadに出力されている
+- [ ] AdSense確認用scriptが1回だけ読み込まれている
+- [ ] 対象IDが `ca-pub-1305303366441643` である
+- [ ] 広告枠を追加しすぎていない
+
+## モバイル表示
+
+- [ ] Header/Footerが崩れない
+- [ ] 固定ページ本文が読みやすい
+- [ ] ゲーム画面、試合画面、行動カードが横にはみ出さない
+- [ ] 表やリストが画面外に出ない
+- [ ] スマホで広告枠が操作ボタン付近に表示されない
+
+## デプロイ確認
 
 - [ ] `npm run lint` が通る
 - [ ] `npm run build` が通る
-- [ ] `NEXT_PUBLIC_SITE_URL` を本番ドメインに変更する
-- [ ] `public/robots.txt` のSitemap URLを本番ドメインに変更する
-- [ ] sitemapに主要ページが含まれている
+- [ ] `git status` で差分を確認した
+- [ ] `git add .` で必要ファイルをステージした
+- [ ] `git commit` した
+- [ ] `git push` した
+- [ ] GitHub上で最新コミットを確認した
+- [ ] Vercel Deploymentsで最新デプロイが成功している
+- [ ] 公開URLで固定ページ、ゲーム開始、AdSense確認タグ、robots、sitemapを確認した
+- [ ] AdSense再審査前に、公開URLでhead内のmeta/scriptを確認した

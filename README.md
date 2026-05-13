@@ -57,3 +57,27 @@ npm run lint
 - [Player System Design](./docs/player-system-design.md)
 - [Financial Recovery Design](./docs/financial-recovery-design.md)
 - [Alpha Roadmap](./docs/alpha-roadmap.md)
+
+## デプロイ前チェック
+
+公開前は、ローカル確認、GitHub反映、Vercel反映、公開URL確認を分けて確認します。
+
+```bash
+npm run build
+git status
+git add .
+git commit -m "Update site quality and deployment readiness"
+git push
+```
+
+デプロイ前後に確認すること:
+
+- `npm run build` が成功していること
+- `git status` で意図しない未追跡ファイルや差分が残っていないこと
+- GitHub上で最新コミットが反映されていること
+- Vercel Deploymentsで最新デプロイが成功していること
+- 公開URLでHeader/Footer、固定ページ、ゲーム開始、localStorage復元が動くこと
+- `robots.txt` と `sitemap.xml` が公開URLから確認できること
+- AdSense所有権確認用のscript/metaタグがheadに出力されていること
+
+AdSenseのクライアントIDやスロットIDなどの秘密情報はREADMEに書かず、必要に応じてVercelの環境変数で管理します。
