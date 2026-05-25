@@ -48,18 +48,7 @@ export function AdSenseAd({
   }, [renderAd]);
 
   if (!renderAd) {
-    if (process.env.NODE_ENV === "production") {
-      return null;
-    }
-
-    return (
-      <aside
-        aria-label="開発用広告枠"
-        className={`rounded-md border border-dashed border-slate-700 bg-slate-900/60 p-4 text-center text-xs text-slate-500 ${className}`}
-      >
-        広告枠（開発用）
-      </aside>
-    );
+    return null;
   }
 
   return (

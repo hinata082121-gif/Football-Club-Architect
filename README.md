@@ -63,6 +63,7 @@ npm run lint
 公開前は、ローカル確認、GitHub反映、Vercel反映、公開URL確認を分けて確認します。
 
 ```bash
+npm run lint
 npm run build
 git status
 git add .
@@ -72,12 +73,20 @@ git push
 
 デプロイ前後に確認すること:
 
+- `/` が説明量のあるランディングページになっていること
+- `/play` でゲーム本体が開き、localStorage保存と復元が動くこと
 - `npm run build` が成功していること
+- `npm run lint` が成功していること
 - `git status` で意図しない未追跡ファイルや差分が残っていないこと
+- `git add .` で必要な変更をステージしたこと
+- `git commit` で意図が分かるメッセージを残したこと
+- `git push` でGitHubへ反映したこと
 - GitHub上で最新コミットが反映されていること
 - Vercel Deploymentsで最新デプロイが成功していること
 - 公開URLでHeader/Footer、固定ページ、ゲーム開始、localStorage復元が動くこと
+- Search ConsoleのURL inspectionでトップページと主要固定ページの取得状態を確認すること
 - `robots.txt` と `sitemap.xml` が公開URLから確認できること
 - AdSense所有権確認用のscript/metaタグがheadに出力されていること
+- AdSense再申請前に、広告枠が操作ボタン付近に出ていないことを確認すること
 
 AdSenseのクライアントIDやスロットIDなどの秘密情報はREADMEに書かず、必要に応じてVercelの環境変数で管理します。

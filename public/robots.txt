@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://football-club-architect.vercel.app/sitemap.xml

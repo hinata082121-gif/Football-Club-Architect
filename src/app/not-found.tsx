@@ -10,7 +10,7 @@ export default function NotFound() {
           指定されたページは存在しないか、移動した可能性があります。ゲーム本体、遊び方、FAQ、用語集など主要ページへ戻れます。
         </p>
         <div className="mt-6 flex flex-wrap gap-3 text-sm">
-          <Link href="/#play" className="rounded-md bg-emerald-400 px-4 py-2 font-semibold text-slate-950">
+          <Link href="/play" className="rounded-md bg-emerald-400 px-4 py-2 font-semibold text-slate-950">
             Playへ戻る
           </Link>
           <Link href="/how-to-play" className="rounded-md border border-slate-700 px-4 py-2 text-slate-200">

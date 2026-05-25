@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ContentPage, InfoList, PageSection } from "@/components/site/ContentPage";
 
 export const metadata: Metadata = {
-  title: "免責事項 | Football Club Architect",
+  title: "免責事項",
   description:
     "Football Club Architectのフィクション性、ゲームデータ変更、localStorage保存、外部リンクや広告、責任制限について説明します。",
 };

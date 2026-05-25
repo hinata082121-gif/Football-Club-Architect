@@ -1,7 +1,9 @@
 import type { MetadataRoute } from "next";
+import { siteUrl } from "@/lib/siteMeta";
 
 const routes = [
   "",
+  "/play",
   "/about",
   "/how-to-play",
   "/features",
@@ -16,8 +18,6 @@ const routes = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://football-club-architect.vercel.app";
-
   return routes.map((route) => ({
     url: `${siteUrl}${route}`,
     lastModified: new Date(),

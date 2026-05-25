@@ -1,12 +1,5 @@
 import Link from "next/link";
-
-const primaryLinks = [
-  { href: "/#play", label: "Play" },
-  { href: "/how-to-play", label: "How to Play" },
-  { href: "/features", label: "Features" },
-  { href: "/faq", label: "FAQ" },
-  { href: "/updates", label: "Updates" },
-];
+import { primaryNavigation } from "@/lib/siteNavigation";
 
 export function SiteHeader() {
   return (
@@ -18,7 +11,7 @@ export function SiteHeader() {
         </Link>
         <nav aria-label="サイトナビゲーション" className="max-w-full overflow-x-auto">
           <div className="flex min-w-max gap-2">
-            {primaryLinks.map((link) => (
+            {primaryNavigation.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

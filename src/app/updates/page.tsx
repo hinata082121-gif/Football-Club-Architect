@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ContentPage, PageSection } from "@/components/site/ContentPage";
 
 export const metadata: Metadata = {
-  title: "更新情報 | Football Club Architect",
+  title: "更新情報",
   description:
     "Football Club Architectの最近の更新、localStorage保存改善、月次進行UX、公式戦4か月自動開催、AdSense審査向け改善をまとめます。",
 };

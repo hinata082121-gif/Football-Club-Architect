@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ContentPage, InfoList, PageSection } from "@/components/site/ContentPage";
 
 export const metadata: Metadata = {
-  title: "利用規約 | Football Club Architect",
+  title: "利用規約",
   description:
     "Football Club Architectの利用条件、α版の仕様変更、localStorage保存、禁止事項、広告表示、免責事項を説明します。",
 };

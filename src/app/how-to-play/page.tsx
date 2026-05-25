@@ -3,7 +3,7 @@ import { AdSenseAd } from "@/components/ads/AdSenseAd";
 import { ContentPage, InfoList, PageSection } from "@/components/site/ContentPage";
 
 export const metadata: Metadata = {
-  title: "遊び方 | Football Club Architect",
+  title: "遊び方",
   description:
     "Football Club Architectの始め方、月次進行、AP、社長アクション、スタッフ委任、公式戦、練習試合、財務管理を解説します。",
 };
@@ -16,7 +16,7 @@ export default function HowToPlayPage() {
     >
       <PageSection title="1. ゲーム開始">
         <p>
-          トップページの入力欄でクラブ名と社長名を設定し、ゲームを開始します。未入力でもデフォルト名で開始できます。開始後はホーム画面に移動し、クラブの資金、ファン、評判、チーム戦力、AP、コンディションを確認できます。
+          トップページの「今すぐプレイ」からゲーム本体の/playへ移動し、クラブ名と社長名を設定して開始します。未入力でもデフォルト名で開始できます。開始後はホーム画面に移動し、クラブの資金、ファン、評判、チーム戦力、AP、コンディションを確認できます。
         </p>
       </PageSection>
 

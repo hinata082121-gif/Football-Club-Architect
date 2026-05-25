@@ -1,13 +1,5 @@
 import Link from "next/link";
-
-const footerLinks = [
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
-  { href: "/privacy", label: "Privacy Policy" },
-  { href: "/terms", label: "Terms" },
-  { href: "/disclaimer", label: "Disclaimer" },
-  { href: "/glossary", label: "Glossary" },
-];
+import { footerNavigation } from "@/lib/siteNavigation";
 
 export function SiteFooter() {
   return (
@@ -20,7 +12,7 @@ export function SiteFooter() {
           </p>
         </div>
         <nav aria-label="フッターナビゲーション" className="flex max-w-full flex-wrap gap-3 text-sm">
-          {footerLinks.map((link) => (
+            {footerNavigation.map((link) => (
             <Link key={link.href} href={link.href} className="hover:text-white">
               {link.label}
             </Link>

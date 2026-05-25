@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ContentPage, InfoList, PageSection } from "@/components/site/ContentPage";
 
 export const metadata: Metadata = {
-  title: "Contact | Football Club Architect",
+  title: "Contact",
   description:
     "Football Club Architectへの問い合わせ、バグ報告、改善要望、広告・プライバシーに関する連絡方法を案内します。",
 };

@@ -2,14 +2,19 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
+import { adsensePublisherId, siteDescription, siteName, siteUrl } from "@/lib/siteMeta";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Football Club Architect",
-  description: "AIで創る名門クラブ。ローカルで遊べるAIクラブ経営シミュレーション。",
-  applicationName: "Football Club Architect",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: siteName,
+    template: `%s | ${siteName}`,
+  },
+  description: siteDescription,
+  applicationName: siteName,
   other: {
-    "google-adsense-account": "ca-pub-1305303366441643",
+    "google-adsense-account": adsensePublisherId,
   },
 };
 
@@ -24,7 +29,7 @@ export default function RootLayout({
         <Script
           id="adsense-site-verification"
           async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1305303366441643"
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsensePublisherId}`}
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />

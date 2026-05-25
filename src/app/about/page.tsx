@@ -3,7 +3,7 @@ import { AdSenseAd } from "@/components/ads/AdSenseAd";
 import { ContentPage, InfoList, PageSection } from "@/components/site/ContentPage";
 
 export const metadata: Metadata = {
-  title: "About | Football Club Architect",
+  title: "About",
   description:
     "Football Club Architectの概要、社長視点のAIクラブ経営、localStorage保存、α版としての開発方針を説明します。",
 };

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ContentPage } from "@/components/site/ContentPage";
 
 export const metadata: Metadata = {
-  title: "用語集 | Football Club Architect",
+  title: "用語集",
   description:
     "Football Club ArchitectのAP、クラブレベル、チーム戦力、委任レベル、スカウト方針、債務超過、localStorageなどの用語を解説します。",
 };

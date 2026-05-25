@@ -4,6 +4,8 @@ Football Club Architectを広告収益化に対応できる構造へ整えるた
 
 ## 固定ページ
 
+- [ ] `/` がゲーム本体ではなく、説明量のあるランディングページになっている
+- [ ] `/play` にゲーム本体が分離され、既存のlocalStorage保存キーと復元処理が維持されている
 - [ ] `/about` が存在し、社長視点、AIスタッフ、監督AI、スカウト、財務、α版、localStorage保存を説明している
 - [ ] `/how-to-play` が存在し、開始方法、月次進行、AP、社長アクション、公式戦、練習試合、財務再建を説明している
 - [ ] `/features` が存在し、独自機能を箇条書きだけでなく本文付きで説明している
@@ -22,6 +24,9 @@ Football Club Architectを広告収益化に対応できる構造へ整えるた
 - [ ] how-to-playだけで初回ユーザーが基本操作を理解できる
 - [ ] featuresがゲームの独自性を説明している
 - [ ] FAQが実用的で、広告閲覧によるゲーム報酬がないことを説明している
+- [ ] 固定ページに著者情報、最終更新、実装済み仕様に基づく説明がある
+- [ ] `/updates` にlocalStorage保存、月次進行UX、公式戦4か月自動開催などの具体的な更新がある
+- [ ] モバイルでも主要本文と内部リンクが省略されていない
 
 ## Header / Footer
 
@@ -33,6 +38,8 @@ Football Club Architectを広告収益化に対応できる構造へ整えるた
 
 ## 広告配置安全性
 
+- [ ] 審査前は `NEXT_PUBLIC_ENABLE_ADS=false` または未設定で広告枠が描画されない
+- [ ] `/play` には広告枠を表示していない
 - [ ] 広告は環境変数で有効化される
 - [ ] ゲーム開始ボタン、社長アクション、翌月進行、試合実行、練習試合、公式戦エントリー付近に広告がない
 - [ ] モーダル内に広告がない
@@ -52,8 +59,9 @@ Football Club Architectを広告収益化に対応できる構造へ整えるた
 ## SEO / クロール
 
 - [ ] 各固定ページに固有のtitleとdescriptionがある
-- [ ] `public/robots.txt` が存在し、サイト全体をDisallowしていない
+- [ ] `src/app/robots.ts` が存在し、サイト全体をDisallowしていない
 - [ ] `src/app/sitemap.ts` が存在し、主要固定ページが含まれている
+- [ ] sitemapに `/play` が含まれている
 - [ ] `NEXT_PUBLIC_SITE_URL` が `https://football-club-architect.vercel.app` または本番ドメインに設定されている
 - [ ] `robots.txt` のSitemap URLが公開ドメインと一致している
 
@@ -83,4 +91,5 @@ Football Club Architectを広告収益化に対応できる構造へ整えるた
 - [ ] GitHub上で最新コミットを確認した
 - [ ] Vercel Deploymentsで最新デプロイが成功している
 - [ ] 公開URLで固定ページ、ゲーム開始、AdSense確認タグ、robots、sitemapを確認した
+- [ ] Search Console URL inspectionでトップページと主要固定ページを確認した
 - [ ] AdSense再審査前に、公開URLでhead内のmeta/scriptを確認した

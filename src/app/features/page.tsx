@@ -3,7 +3,7 @@ import { AdSenseAd } from "@/components/ads/AdSenseAd";
 import { ContentPage, PageSection } from "@/components/site/ContentPage";
 
 export const metadata: Metadata = {
-  title: "特徴 | Football Club Architect",
+  title: "特徴",
   description:
     "社長視点のクラブ経営、AIスタッフ委任、監督AI、自動試合、選手成長、財務リカバリーなどFootball Club Architectの特徴を紹介します。",
 };

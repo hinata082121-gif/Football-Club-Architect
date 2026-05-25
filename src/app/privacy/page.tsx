@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ContentPage, InfoList, PageSection } from "@/components/site/ContentPage";
 
 export const metadata: Metadata = {
-  title: "プライバシーポリシー | Football Club Architect",
+  title: "プライバシーポリシー",
   description:
     "Football Club ArchitectのlocalStorage保存、Cookie、Google AdSense、問い合わせ情報、第三者提供、外部リンクについて説明します。",
 };

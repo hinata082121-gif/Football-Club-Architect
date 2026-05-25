@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ContentPage, InfoList, PageSection } from "@/components/site/ContentPage";
 
 export const metadata: Metadata = {
-  title: "広告について | Football Club Architect",
+  title: "広告について",
   description: "Football Club Architectにおける広告表示方針、ゲーム操作との分離、広告設定について説明します。",
 };
 
