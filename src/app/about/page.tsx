@@ -5,7 +5,7 @@ import { ContentPage, InfoList, PageSection } from "@/components/site/ContentPag
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Football Club Architectの概要、社長視点のAIクラブ経営、localStorage保存、α版としての開発方針を説明します。",
+    "Football Club Architectの概要、監督ではなく社長視点にした設計意図、AIスタッフ委任、localStorage保存、α版としての開発方針を説明します。",
 };
 
 export default function AboutPage() {
@@ -34,6 +34,24 @@ export default function AboutPage() {
             "公式戦と練習試合: 公式戦は4か月単位で自動開催され、練習試合は育成、調整、地域交流の手段になります。",
           ]}
         />
+      </PageSection>
+
+      <PageSection title="なぜ「監督」ではなく「社長」視点なのか">
+        <p>
+          Football Club Architectでは、プレイヤーは試合中の細かい操作を行う監督ではなく、クラブ全体を設計する社長としてプレイします。サッカークラブの成長は、試合の采配だけでなく、資金管理、スタッフ採用、選手補強、スタジアム、ファン、公式戦参加の判断など、ピッチ外の意思決定にも大きく左右されます。
+        </p>
+        <p>
+          このゲームでは、そうした「クラブを長期的に育てる判断」を中心に体験できるよう設計しています。短期的に勝つための補強だけでなく、年俸負担、契約残り月数、スタッフへの委任範囲、財務危機への備えまで含めて、社長としてクラブの将来を組み立てることが目的です。
+        </p>
+      </PageSection>
+
+      <PageSection title="AIスタッフ委任の考え方">
+        <p>
+          AIスタッフは、プレイヤーの代わりにクラブ運営の一部を支える存在です。すべてを社長が直接操作するのではなく、スタッフの能力や委任レベルによってクラブ運営の効率が変わる構造を目指しています。
+        </p>
+        <p>
+          現在のα版では、スタッフAIは行動理由と結果をログに残し、委任レベルによって提案のみ、小規模行動のみ自動、通常委任、完全委任を切り替えられます。将来的には、スタッフごとの得意分野や判断精度によって、よりクラブごとの個性が出るような設計を強化していく予定です。
+        </p>
       </PageSection>
 
       <PageSection title="α版としての位置づけ">

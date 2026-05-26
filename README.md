@@ -90,3 +90,15 @@ git push
 - AdSense再申請前に、広告枠が操作ボタン付近に出ていないことを確認すること
 
 AdSenseのクライアントIDやスロットIDなどの秘密情報はREADMEに書かず、必要に応じてVercelの環境変数で管理します。
+
+## AdSense審査中の更新ルール
+
+審査中は、サイト構造や広告配置を大きく動かさず、既存ページの有用性を高める軽微な更新に限定します。
+
+- 広告配置、広告枠、`NEXT_PUBLIC_ENABLE_ADS` の扱いは変更しない
+- `/` と `/play` のURL構造を大きく変更しない
+- 更新は `/updates`、`/how-to-play`、`/faq`、`/glossary` の本文補強を中心にする
+- 日付だけの更新や、薄いページの量産は行わない
+- `npm run build` 後に必ず `git status` で差分を確認する
+- push後にGitHubの最新コミットとVercel Deploymentsの最新デプロイを確認する
+- AdSense所有権確認用のmeta/scriptが公開URLのheadに残っていることを確認する

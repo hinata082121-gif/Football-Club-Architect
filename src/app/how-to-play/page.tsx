@@ -5,7 +5,7 @@ import { ContentPage, InfoList, PageSection } from "@/components/site/ContentPag
 export const metadata: Metadata = {
   title: "遊び方",
   description:
-    "Football Club Architectの始め方、月次進行、AP、社長アクション、スタッフ委任、公式戦、練習試合、財務管理を解説します。",
+    "Football Club Architectの始め方、序盤3か月の進め方、月次進行、AP、社長アクション、公式戦、練習試合、財務管理を解説します。",
 };
 
 export default function HowToPlayPage() {
@@ -54,6 +54,27 @@ export default function HowToPlayPage() {
         <p>
           セーブデータはlocalStorageに保存されます。リロードしても同じブラウザなら復元できます。スマホではタスクバーを横にスクロールし、各画面のカードを縦に確認します。操作ボタンはカード下部に揃えているため、説明文が長いカードでも位置を把握しやすくしています。
         </p>
+      </PageSection>
+
+      <PageSection title="序盤3か月の進め方">
+        <section className="rounded-md border border-slate-800 bg-slate-950/55 p-4">
+          <h3 className="font-semibold text-white">1か月目: クラブの状態を確認する</h3>
+          <p className="mt-2">
+            ゲーム開始直後は、まずクラブの資金、チーム戦力、コンディション、ファン数を確認します。いきなり大きな投資を行うよりも、社長アクションを使ってクラブの基礎状態を整えることが重要です。Football Club Architectでは、1か月ごとの判断が積み重なってクラブの成長につながるため、序盤は無理に勝負を急がず、クラブの弱点を把握することが大切です。
+          </p>
+        </section>
+        <section className="rounded-md border border-slate-800 bg-slate-950/55 p-4">
+          <h3 className="font-semibold text-white">2か月目: 強化方針を決める</h3>
+          <p className="mt-2">
+            2か月目は、選手補強、スタッフ委任、練習試合、広報活動などの中から、どの方向にクラブを伸ばすかを決めます。資金に余裕がない場合は、支出を増やしすぎない行動を選ぶ必要があります。チーム戦力を上げたいのか、ファン数や評判を伸ばしたいのか、財務を安定させたいのかによって、社長アクションの優先度が変わります。
+          </p>
+        </section>
+        <section className="rounded-md border border-slate-800 bg-slate-950/55 p-4">
+          <h3 className="font-semibold text-white">3か月目: 公式戦参加を検討する</h3>
+          <p className="mt-2">
+            公式戦は、一度参加すると4か月間にわたって自動で進行します。そのため、参加前にはチーム戦力、コンディション、資金残高を確認しておくことが重要です。準備不足のまま参加すると、結果が安定しにくくなる可能性があります。一方で、公式戦はクラブの評判や成長にも関わる重要な要素なので、クラブの状態が整ってきたら参加を検討しましょう。
+          </p>
+        </section>
       </PageSection>
 
       <AdSenseAd slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} format="horizontal" />
